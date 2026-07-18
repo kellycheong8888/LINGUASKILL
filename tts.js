@@ -1,9 +1,7 @@
 const axios = require('axios');
 
 module.exports = async (req, res) => {
-    // ============================================================
-    // ★★★ CORS 跨域配置 ★★★
-    // ============================================================
+    // CORS 跨域配置
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -15,25 +13,18 @@ module.exports = async (req, res) => {
         return;
     }
 
-    // ============================================================
     // 只接受 POST 请求
-    // ============================================================
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     const { text, voice, rate, pitch } = req.body;
 
-    // ============================================================
     // 参数验证
-    // ============================================================
     if (!text) {
         return res.status(400).json({ error: 'Missing text parameter' });
     }
 
-    // ============================================================
-    // Azure TTS 配置
-    // ============================================================
     // ★★★ 请替换为您的 Azure 密钥和区域 ★★★
     const AZURE_KEY = process.env.AZURE_KEY || '您的Azure密钥';
     const AZURE_REGION = process.env.AZURE_REGION || '您的Azure区域';
@@ -68,7 +59,6 @@ module.exports = async (req, res) => {
             responseType: 'arraybuffer'
         });
 
-        // 返回音频数据
         res.setHeader('Content-Type', 'audio/mpeg');
         res.setHeader('Content-Length', response.data.length);
         res.status(200).send(response.data);
