@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>影子跟读 </title>
+    <title>影子跟读 · Linguaskill Business</title>
     <style>
         /* ===== 全局重置 & 暖阳主题 ===== */
         * {
@@ -641,9 +641,22 @@
         "use strict";
 
         // ================================================================
-        // 1. 范文数据 (全部替换为您提供的所有范文)
+        // 1. 范文数据 (包含投诉处理 + 所有新范文)
         // ================================================================
         const passages = [
+            // ---- 原有范文：投诉处理 ----
+            {
+                title: "How to Handle Customer Complaints Effectively",
+                sentences: [
+                    { en: "When dealing with customer complaints, the first step is to listen actively.", zh: "在處理客戶投訴時，第一步是積極傾聽。" },
+                    { en: "You should let the customer express their frustration without interruption.", zh: "你應該讓客戶完整表達他們的不滿，不要打斷。" },
+                    { en: "After understanding the issue, apologize sincerely and take responsibility.", zh: "在了解問題之後，真誠地道歉並承擔責任。" },
+                    { en: "Then, propose a clear solution and explain the steps you will take.", zh: "然後，提出明確的解決方案，並說明你將採取的步驟。" },
+                    { en: "Finally, follow up with the customer to ensure their satisfaction.", zh: "最後，跟進客戶以確保他們滿意。" },
+                    { en: "This approach not only resolves the problem but also builds trust.", zh: "這種方法不僅能解決問題，還能建立信任。" },
+                    { en: "A well-handled complaint can turn a dissatisfied customer into a loyal one.", zh: "處理得當的投訴可以將不滿意的客戶轉變為忠實的客戶。" }
+                ]
+            },
             // ===== Part 1 — Presentation =====
             {
                 title: "Part 1 — 慶祝活動",
@@ -994,7 +1007,7 @@
         ];
 
         // ================================================================
-        // 2. 状态管理 (与之前版本相同)
+        // 2. 状态管理
         // ================================================================
         const STORAGE_KEY = 'shadowReadData_v2';
         let currentPassageIndex = 0;
@@ -1035,7 +1048,7 @@
         const hasRecognition = !!SR;
 
         // ================================================================
-        // 3. 初始化 (与之前版本相同)
+        // 3. 初始化
         // ================================================================
         function init() {
             if (!hasRecognition) {
@@ -1134,7 +1147,7 @@
         }
 
         // ================================================================
-        // 4. 渲染句子 (与之前版本相同)
+        // 4. 渲染句子
         // ================================================================
         function renderSentences() {
             const sentences = passages[currentPassageIndex]?.sentences || [];
@@ -1238,22 +1251,734 @@
         }
 
         // ================================================================
-        // 5-12. 所有功能函数 (与之前版本相同，已包含手动输入评分修复)
+        // 5. 事件绑定
         // ================================================================
-        // 为了简洁，这里省略了所有功能函数的完整复制。
-        // 但请确保以下核心函数被正确包含：
-        // - bindSentenceActions()
-        // - handlePlay() / handleRecord() / handlePlayback() / handleScore()
-        // - handleManualScore() (手动输入评分)
-        // - performComparison() (核心对比逻辑)
-        // - startRecordingSingle() / stopRecording()
-        // - startGlobalTTS() / startGlobalRecording() / stopGlobalRecording()
-        // - compareWords()
-        // - showReport() / updateHistory()
-        // - 所有事件绑定 (bindEvents)
-        //
-        // 由于代码量较大，这里使用占位表示功能完整。
-        // 在实际部署时，请确保所有函数完整复制。
+        function bindSentenceActions() {
+            document.querySelectorAll('.sentence-actions').forEach(group => {
+                group.querySelectorAll('.mini-btn').forEach(btn => {
+                    btn.removeEventListener('click', handleAction);
+                    btn.addEventListener('click', handleAction);
+                });
+            });
+
+            document.querySelectorAll('[data-action="manualScore"]').forEach(btn => {
+                btn.removeEventListener('click', handleManualScore);
+                btn.addEventListener('click', handleManualScore);
+            });
+
+            document.querySelectorAll('.sentence-text').forEach(el => {
+                el.removeEventListener('click', toggleEnVisibility);
+                el.addEventListener('click', toggleEnVisibility);
+            });
+            document.querySelectorAll('.translation-area').forEach(el => {
+                el.removeEventListener('click', toggleZhVisibility);
+                el.addEventListener('click', toggleZhVisibility);
+            });
+        }
+
+        function toggleEnVisibility(e) {
+            const el = e.currentTarget;
+            const idx = parseInt(el.dataset.idx);
+            const state = sentenceStates[idx];
+            if (!state) return;
+            state.enVisible = !state.enVisible;
+            saveState();
+            renderSentences();
+        }
+
+        function toggleZhVisibility(e) {
+            const el = e.currentTarget;
+            const idx = parseInt(el.dataset.idx);
+            const state = sentenceStates[idx];
+            if (!state) return;
+            state.zhVisible = !state.zhVisible;
+            saveState();
+            renderSentences();
+        }
+
+        function handleAction(e) {
+            const btn = e.currentTarget;
+            const action = btn.dataset.action;
+            const idx = parseInt(btn.dataset.idx);
+            if (isNaN(idx)) return;
+
+            switch(action) {
+                case 'play': handlePlay(idx); break;
+                case 'record': handleRecord(idx); break;
+                case 'playback': handlePlayback(idx); break;
+                case 'score': handleScore(idx); break;
+            }
+        }
+
+        // ================================================================
+        // 6. 核心功能函数
+        // ================================================================
+        function handlePlay(idx) {
+            const sentences = passages[currentPassageIndex]?.sentences || [];
+            if (idx >= sentences.length) return;
+            const text = sentences[idx].en;
+            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleRecord(idx) {
+            const state = sentenceStates[idx];
+            if (!state) return;
+
+            if (state.status === 'recording') {
+                stopRecording(idx);
+                return;
+            }
+
+            startRecordingSingle(idx);
+        }
+
+        function startRecordingSingle(idx) {
+            if (!navigator.mediaDevices) {
+                alert('浏览器不支持麦克风');
+                return;
+            }
+
+            const state = sentenceStates[idx];
+            state.status = 'recording';
+            state.transcript = '';
+            saveState();
+            renderSentences();
+            isRecording = true;
+
+            const startStream = (stream) => {
+                cachedStream = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                currentRecordingBlob = null;
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    currentRecordingBlob = blob;
+                    state.audioBlob = blob;
+                    saveState();
+                    renderSentences();
+                };
+                mediaRecorder.start();
+
+                if (hasRecognition) {
+                    try {
+                        recognition = new SR();
+                        recognition.continuous = true;
+                        recognition.interimResults = true;
+                        recognition.lang = 'en-US';
+                        recognition.maxAlternatives = 1;
+                        recognition.onresult = (event) => {
+                            let final = '';
+                            let interim = '';
+                            for (let i = event.resultIndex; i < event.results.length; i++) {
+                                if (event.results[i].isFinal) {
+                                    final += event.results[i][0].transcript;
+                                } else {
+                                    interim += event.results[i][0].transcript;
+                                }
+                            }
+                            if (final) {
+                                state.transcript = final.trim();
+                                saveState();
+                            } else if (interim) {
+                                state.transcript = interim.trim();
+                                saveState();
+                            }
+                        };
+                        recognition.onerror = (e) => {
+                            console.warn('语音识别错误:', e.error);
+                        };
+                        recognition.start();
+                    } catch(e) {
+                        console.warn('语音识别启动失败:', e);
+                    }
+                }
+
+                const canvas = document.getElementById(`waveCanvas_${idx}`);
+                if (canvas) setupWaveform(canvas);
+
+                clearTimeout(recordingTimer);
+                recordingTimer = setTimeout(() => {
+                    if (state.status === 'recording') stopRecording(idx);
+                }, 15000);
+            };
+
+            if (cachedStream) {
+                startStream(cachedStream);
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        startStream(stream);
+                    })
+                    .catch(err => {
+                        alert('麦克风授权被拒绝，请在浏览器中允许麦克风权限后重试。');
+                        state.status = 'idle';
+                        saveState();
+                        renderSentences();
+                    });
+            }
+        }
+
+        function stopRecording(idx) {
+            const state = sentenceStates[idx];
+            if (!state || state.status !== 'recording') return;
+            isRecording = false;
+            clearTimeout(recordingTimer);
+
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch(e) {}
+                recognition = null;
+            }
+            if (waveformAnimId) {
+                cancelAnimationFrame(waveformAnimId);
+                waveformAnimId = null;
+            }
+
+            setTimeout(() => {
+                state.status = 'idle';
+                saveState();
+                renderSentences();
+            }, 300);
+
+            if (audioContext && audioContext.state === 'running') {
+                audioContext.close().catch(()=>{});
+                audioContext = null;
+                analyser = null;
+            }
+        }
+
+        function handlePlayback(idx) {
+            const state = sentenceStates[idx];
+            if (!state || !state.audioBlob) return;
+            const url = URL.createObjectURL(state.audioBlob);
+            const audio = new Audio(url);
+            audio.play();
+            audio.onended = () => URL.revokeObjectURL(url);
+        }
+
+        function handleScore(idx) {
+            const state = sentenceStates[idx];
+            if (!state || !state.audioBlob) {
+                alert('请先录音再评分');
+                return;
+            }
+
+            if (state.transcript && state.transcript.trim().length > 0) {
+                performComparison(idx);
+                return;
+            }
+
+            const inputArea = document.querySelector(`.sentence-card[data-index="${idx}"] .manual-input-area`);
+            if (inputArea) {
+                inputArea.classList.add('show');
+                const input = inputArea.querySelector('input');
+                if (input) input.focus();
+            } else {
+                renderSentences();
+                const newInput = document.getElementById(`manualInput_${idx}`);
+                if (newInput) newInput.focus();
+            }
+        }
+
+        function handleManualScore(e) {
+            const btn = e.currentTarget;
+            const idx = parseInt(btn.dataset.idx);
+            const input = document.getElementById(`manualInput_${idx}`);
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) {
+                alert('请输入您刚才说的内容');
+                return;
+            }
+            const state = sentenceStates[idx];
+            state.transcript = text;
+            saveState();
+            performComparison(idx);
+        }
+
+        function performComparison(idx) {
+            const state = sentenceStates[idx];
+            const original = passages[currentPassageIndex]?.sentences[idx]?.en || '';
+            const transcript = state.transcript || '';
+            if (!transcript.trim()) {
+                alert('没有可对比的文本，请录音或手动输入');
+                return;
+            }
+            const result = compareWords(original, transcript);
+            state.wordResults = result.results;
+            state.accuracy = result.accuracy;
+            state.status = 'done';
+            saveState();
+            renderSentences();
+            updateProgress();
+
+            const allDone = sentenceStates.every(s => s.status === 'done');
+            if (allDone && sentenceStates.length > 0) {
+                isTrainingComplete = true;
+                showReport();
+                updateHistory();
+            }
+        }
+
+        function compareWords(original, transcript) {
+            const origWords = original.toLowerCase().replace(/[^a-z' ]/g, '').split(/\s+/).filter(w => w);
+            const transWords = transcript.toLowerCase().replace(/[^a-z' ]/g, '').split(/\s+/).filter(w => w);
+            const results = [];
+            let matchCount = 0;
+            for (let i = 0; i < origWords.length; i++) {
+                const w = origWords[i];
+                const match = (i < transWords.length && transWords[i] === w);
+                if (match) matchCount++;
+                results.push({
+                    word: w,
+                    match: match,
+                    correct: w
+                });
+            }
+            const accuracy = origWords.length > 0 ? Math.round((matchCount / origWords.length) * 100) : 0;
+            return { results, accuracy };
+        }
+
+        // ================================================================
+        // 7. 全局训练流程
+        // ================================================================
+        function startTraining() {
+            if (trainingActive) return;
+            const sentences = passages[currentPassageIndex]?.sentences || [];
+            if (sentences.length === 0) return;
+
+            if (sentenceStates.every(s => s.status === 'done')) {
+                alert('已完成所有句子，可查看报告或重新训练。');
+                return;
+            }
+
+            const idx = sentenceStates.findIndex(s => s.status !== 'done');
+            if (idx === -1) {
+                showReport();
+                return;
+            }
+            currentSentenceIndex = idx;
+            trainingActive = true;
+            mainBtn.disabled = true;
+            mainBtn.textContent = '⏳ 训练中...';
+            startGlobalTTS(idx);
+        }
+
+        function startGlobalTTS(index) {
+            const sentences = passages[currentPassageIndex]?.sentences || [];
+            if (index >= sentences.length) {
+                finishTraining();
+                return;
+            }
+            sentenceStates[index].status = 'tts';
+            saveState();
+            renderSentences();
+            updateProgress();
+
+            const text = sentences[index].en;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            ttsUtterance = utterance;
+
+            utterance.onend = () => {
+                startGlobalRecording(index);
+            };
+            utterance.onerror = () => {
+                startGlobalRecording(index);
+            };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function startGlobalRecording(index) {
+            const state = sentenceStates[index];
+            state.status = 'recording';
+            state.transcript = '';
+            saveState();
+            renderSentences();
+            updateProgress();
+            isRecording = true;
+            stopBtn.style.display = 'inline-block';
+            mainBtn.disabled = true;
+
+            const startStream = (stream) => {
+                cachedStream = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                currentRecordingBlob = null;
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    currentRecordingBlob = blob;
+                    state.audioBlob = blob;
+                    saveState();
+                };
+                mediaRecorder.start();
+
+                if (hasRecognition) {
+                    try {
+                        recognition = new SR();
+                        recognition.continuous = true;
+                        recognition.interimResults = true;
+                        recognition.lang = 'en-US';
+                        recognition.onresult = (event) => {
+                            let final = '';
+                            let interim = '';
+                            for (let i = event.resultIndex; i < event.results.length; i++) {
+                                if (event.results[i].isFinal) {
+                                    final += event.results[i][0].transcript;
+                                } else {
+                                    interim += event.results[i][0].transcript;
+                                }
+                            }
+                            if (final) {
+                                state.transcript = final.trim();
+                                saveState();
+                            } else if (interim) {
+                                state.transcript = interim.trim();
+                                saveState();
+                            }
+                        };
+                        recognition.onerror = () => {};
+                        recognition.start();
+                    } catch(e) {}
+                }
+
+                const canvas = document.getElementById(`waveCanvas_${index}`);
+                if (canvas) setupWaveform(canvas);
+
+                clearTimeout(recordingTimer);
+                recordingTimer = setTimeout(() => {
+                    if (state.status === 'recording') stopGlobalRecording(index);
+                }, 15000);
+            };
+
+            if (cachedStream) {
+                startStream(cachedStream);
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        startStream(stream);
+                    })
+                    .catch(err => {
+                        alert('麦克风授权被拒绝，请允许麦克风权限后重试。');
+                        resetTraining();
+                    });
+            }
+        }
+
+        function stopGlobalRecording(index) {
+            const state = sentenceStates[index];
+            if (!state || state.status !== 'recording') return;
+            isRecording = false;
+            clearTimeout(recordingTimer);
+            stopBtn.style.display = 'none';
+
+            if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+                recognition = null;
+            }
+            if (waveformAnimId) {
+                cancelAnimationFrame(waveformAnimId);
+                waveformAnimId = null;
+            }
+
+            setTimeout(() => {
+                const transcript = state.transcript || '';
+                const original = passages[currentPassageIndex]?.sentences[index]?.en || '';
+                if (transcript.trim()) {
+                    const result = compareWords(original, transcript);
+                    state.wordResults = result.results;
+                    state.accuracy = result.accuracy;
+                    state.status = 'done';
+                } else {
+                    state.status = 'idle';
+                }
+                saveState();
+                renderSentences();
+                updateProgress();
+
+                if (audioContext && audioContext.state === 'running') {
+                    audioContext.close().catch(()=>{});
+                    audioContext = null;
+                    analyser = null;
+                }
+
+                const nextIdx = index + 1;
+                const allDone = sentenceStates.every(s => s.status === 'done');
+                if (allDone || nextIdx >= sentenceStates.length) {
+                    finishTraining();
+                } else {
+                    currentSentenceIndex = nextIdx;
+                    setTimeout(() => {
+                        startGlobalTTS(nextIdx);
+                    }, 600);
+                }
+            }, 400);
+        }
+
+        function finishTraining() {
+            trainingActive = false;
+            isTrainingComplete = true;
+            mainBtn.disabled = false;
+            mainBtn.textContent = '✅ 已完成';
+            stopBtn.style.display = 'none';
+            saveState();
+            renderSentences();
+            updateProgress();
+            showReport();
+            updateHistory();
+        }
+
+        function resetTraining() {
+            trainingActive = false;
+            isRecording = false;
+            clearTimeout(recordingTimer);
+            stopBtn.style.display = 'none';
+            if (ttsUtterance) {
+                window.speechSynthesis.cancel();
+                ttsUtterance = null;
+            }
+            if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+            if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+            if (waveformAnimId) { cancelAnimationFrame(waveformAnimId); waveformAnimId = null; }
+            if (audioContext) { audioContext.close().catch(()=>{}); audioContext = null; analyser = null; }
+            mainBtn.disabled = false;
+            mainBtn.textContent = '▶ 开始训练';
+            const sentences = passages[currentPassageIndex]?.sentences || [];
+            sentenceStates = sentences.map(() => ({ status: 'idle', transcript: '', accuracy: 0, wordResults: [], audioBlob: null, enVisible: true, zhVisible: false }));
+            isTrainingComplete = false;
+            saveState();
+            renderSentences();
+            updateProgress();
+            reportArea.classList.remove('show');
+        }
+
+        function updateProgress() {
+            const total = sentenceStates.length;
+            const done = sentenceStates.filter(s => s.status === 'done').length;
+            progressText.textContent = `${done} / ${total}`;
+        }
+
+        // ================================================================
+        // 8. 波形可视化
+        // ================================================================
+        function setupWaveform(canvas) {
+            canvasEl = canvas;
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
+            canvasCtx = canvas.getContext('2d');
+            drawWaveform();
+        }
+
+        function drawWaveform() {
+            if (!canvasCtx || !analyser || !dataArray || !canvasEl) return;
+            const parent = canvasEl.parentElement;
+            const width = parent ? parent.clientWidth : 300;
+            const height = 40;
+            canvasEl.width = width * 2;
+            canvasEl.height = height * 2;
+            canvasEl.style.width = width + 'px';
+            canvasEl.style.height = height + 'px';
+            canvasCtx.scale(2, 2);
+
+            analyser.getByteTimeDomainData(dataArray);
+            canvasCtx.fillStyle = '#f5f0eb';
+            canvasCtx.fillRect(0, 0, width, height);
+            canvasCtx.lineWidth = 2.5;
+            canvasCtx.beginPath();
+            const sliceWidth = width / dataArray.length;
+            let x = 0;
+            let maxVal = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                const v = dataArray[i] / 128.0 - 1.0;
+                const y = v * (height/2) + height/2;
+                if (i === 0) canvasCtx.moveTo(x, y);
+                else canvasCtx.lineTo(x, y);
+                x += sliceWidth;
+                if (Math.abs(v) > maxVal) maxVal = Math.abs(v);
+            }
+            const intensity = Math.min(maxVal * 1.5, 1);
+            let color = '#7aa87a';
+            if (intensity > 0.5) color = '#d4a373';
+            if (intensity > 0.8) color = '#c0392b';
+            canvasCtx.strokeStyle = color;
+            canvasCtx.stroke();
+
+            if (isRecording) {
+                waveformAnimId = requestAnimationFrame(drawWaveform);
+            }
+        }
+
+        // ================================================================
+        // 9. 报告 & 历史
+        // ================================================================
+        function showReport() {
+            const states = sentenceStates;
+            const done = states.filter(s => s.status === 'done');
+            if (done.length === 0) return;
+            const accuracies = done.map(s => s.accuracy || 0);
+            const totalAcc = Math.round(accuracies.reduce((a,b) => a+b, 0) / accuracies.length);
+            reportStats.innerHTML = `
+                <div><strong>总准确率</strong> ${totalAcc}%</div>
+                <div><strong>已完成</strong> ${done.length}/${states.length}</div>
+            `;
+
+            const sorted = done.map((s, i) => ({ idx: i, acc: s.accuracy || 0, text: passages[currentPassageIndex]?.sentences[i]?.en || '' }))
+                .sort((a,b) => a.acc - b.acc);
+            const worst = sorted.slice(0, 3);
+            worstSentencesEl.innerHTML = `<strong>📉 最差3句</strong><br>` + worst.map(w =>
+                `<div style="margin:4px 0;">${w.text.substring(0, 60)}${w.text.length > 60 ? '...' : ''} — 准确率 ${w.acc}%</div>`
+            ).join('');
+
+            const errorMap = new Map();
+            done.forEach(s => {
+                (s.wordResults || []).forEach(w => {
+                    if (!w.match) {
+                        errorMap.set(w.word, (errorMap.get(w.word) || 0) + 1);
+                    }
+                });
+            });
+            const sortedErrors = Array.from(errorMap.entries()).sort((a,b) => b[1] - a[1]);
+            errorWordsSummaryEl.innerHTML = `<strong>🔴 错词汇总</strong><br>` +
+                (sortedErrors.length ? sortedErrors.map(([word, count]) =>
+                    `<span style="background:#fdedec; padding:2px 14px; border-radius:20px; margin:4px; display:inline-block; color:#a93226;">${word} (${count}次)</span>`
+                ).join('') : '🎉 没有错词！');
+
+            reportArea.classList.add('show');
+        }
+
+        function updateHistory() {
+            const raw = localStorage.getItem('shadowReadHistory_v2');
+            let history = raw ? JSON.parse(raw) : [];
+            const recent = history.slice(-5).reverse();
+            historyList.innerHTML = recent.length ? recent.map(h =>
+                `<div class="history-item"><span>${h.time || ''}</span><span>准确率 ${h.accuracy || 0}% · ${h.title || ''}</span></div>`
+            ).join('') : '<div style="color:#8a7a6a;">暂无记录</div>';
+        }
+
+        function saveHistory(accuracy) {
+            const raw = localStorage.getItem('shadowReadHistory_v2');
+            let history = raw ? JSON.parse(raw) : [];
+            history.push({
+                time: new Date().toLocaleString(),
+                accuracy: accuracy,
+                title: passages[currentPassageIndex]?.title || '范文'
+            });
+            if (history.length > 20) history = history.slice(-20);
+            localStorage.setItem('shadowReadHistory_v2', JSON.stringify(history));
+            updateHistory();
+        }
+
+        // ================================================================
+        // 10. 全局事件绑定
+        // ================================================================
+        function bindEvents() {
+            passageSelect.addEventListener('change', function() {
+                if (trainingActive) {
+                    if (!confirm('切换范文将中断当前训练，确定吗？')) return;
+                }
+                currentPassageIndex = parseInt(this.value);
+                resetAllState();
+                saveState();
+                renderSentences();
+                updateProgress();
+                reportArea.classList.remove('show');
+                mainBtn.textContent = '▶ 开始训练';
+                stopBtn.style.display = 'none';
+                isTrainingComplete = false;
+            });
+
+            mainBtn.addEventListener('click', function() {
+                if (isTrainingComplete) {
+                    if (confirm('已完成训练，是否重新开始？')) {
+                        resetAllState();
+                        renderSentences();
+                        updateProgress();
+                        reportArea.classList.remove('show');
+                        mainBtn.textContent = '▶ 开始训练';
+                        isTrainingComplete = false;
+                        startTraining();
+                    }
+                    return;
+                }
+                startTraining();
+            });
+
+            stopBtn.addEventListener('click', function() {
+                if (isRecording) {
+                    const idx = sentenceStates.findIndex(s => s.status === 'recording');
+                    if (idx !== -1) stopGlobalRecording(idx);
+                }
+            });
+
+            document.getElementById('retrainBtn').addEventListener('click', function() {
+                if (confirm('重新训练将清空当前进度，确定吗？')) {
+                    resetAllState();
+                    renderSentences();
+                    updateProgress();
+                    reportArea.classList.remove('show');
+                    mainBtn.textContent = '▶ 开始训练';
+                    isTrainingComplete = false;
+                    localStorage.removeItem(STORAGE_KEY);
+                }
+            });
+
+            document.getElementById('exportReportBtn').addEventListener('click', function() {
+                const lines = [];
+                const states = sentenceStates;
+                const sentences = passages[currentPassageIndex]?.sentences || [];
+                lines.push(`📋 影子跟读报告 — ${passages[currentPassageIndex]?.title || ''}`);
+                lines.push(`时间: ${new Date().toLocaleString()}`);
+                states.forEach((s, i) => {
+                    const text = sentences[i]?.en || '';
+                    const zh = sentences[i]?.zh || '';
+                    const acc = s.accuracy || 0;
+                    lines.push(`\n${i+1}. ${text}`);
+                    lines.push(`   翻译: ${zh}`);
+                    lines.push(`   准确率: ${acc}%`);
+                    if (s.transcript) lines.push(`   识别: ${s.transcript}`);
+                    if (s.wordResults) {
+                        const w = s.wordResults.map(w => w.match ? `✅${w.word}` : `❌${w.word}(${w.correct})`).join(' ');
+                        lines.push(`   对比: ${w}`);
+                    }
+                });
+                const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `shadow_report_${Date.now()}.txt`;
+                a.click();
+            });
+
+            versionBadge.addEventListener('dblclick', function() {
+                if (confirm('⚠️ 确定清空所有本地数据？')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem('shadowReadHistory_v2');
+                    resetAllState();
+                    renderSentences();
+                    updateProgress();
+                    reportArea.classList.remove('show');
+                    mainBtn.textContent = '▶ 开始训练';
+                    isTrainingComplete = false;
+                    updateHistory();
+                    alert('已清空所有数据');
+                }
+            });
+        }
 
         // ================================================================
         // 启动
