@@ -1311,17 +1311,84 @@
         }
 
         // ================================================================
-        // 6. 核心功能函数
+        // 6. 核心功能函数 - 播放（Azure TTS + 降级）
         // ================================================================
-        function handlePlay(idx) {
+        async function handlePlay(idx) {
             const sentences = passages[currentPassageIndex]?.sentences || [];
             if (idx >= sentences.length) return;
+
             const text = sentences[idx].en;
+            // ★★★ 在这里更换您喜欢的语音 ★★★
+            // 可选值: 'en-GB-SoniaNeural', 'en-GB-AdaMultilingualNeural', 'en-GB-OllieMultilingualNeural'
+            const voiceName = 'en-GB-SoniaNeural';
+            const rate = 1.0;   // 默认语速 1.0，范围 0.5-2.0
+            const pitch = 0;    // 默认音调 0，范围 -50 到 50
+
+            // ★★★ 重要：这里使用您的 Vercel API 地址 ★★★
+            // 请将 'azure-tts-proxy.vercel.app' 替换为您实际部署的 Vercel 域名
+            const apiUrl = `https://azure-tts-proxy.vercel.app/api/tts`;
+            
+            try {
+                // 显示加载状态
+                const btn = document.querySelector(`.sentence-actions button[data-action="play"][data-idx="${idx}"]`);
+                if (btn) btn.textContent = '⏳ 加载中...';
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice: voiceName,
+                        rate: rate,
+                        pitch: pitch
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API 请求失败: ${response.status}`);
+                }
+
+                // 获取音频数据并播放
+                const audioData = await response.arrayBuffer();
+                const audioBlob = new Blob([audioData], { type: 'audio/mpeg' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                const audio = new Audio(audioUrl);
+                audio.play();
+                audio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    if (btn) btn.textContent = '▶ 播放';
+                };
+                audio.onerror = () => {
+                    console.warn('音频播放失败，降级到浏览器 TTS');
+                    fallbackToBrowserTTS(text, idx);
+                };
+
+            } catch (error) {
+                console.warn('Azure TTS 调用失败，降级到浏览器 TTS:', error.message);
+                // 降级到浏览器 TTS
+                fallbackToBrowserTTS(text, idx);
+            }
+        }
+
+        // ================================================================
+        // 降级方案：浏览器自带 TTS
+        // ================================================================
+        function fallbackToBrowserTTS(text, idx) {
             if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
+            utterance.lang = 'en-GB';
             utterance.rate = 0.8;
+            utterance.pitch = 1.0;
             window.speechSynthesis.speak(utterance);
+
+            // 恢复按钮文字
+            const btn = document.querySelector(`.sentence-actions button[data-action="play"][data-idx="${idx}"]`);
+            if (btn) {
+                setTimeout(() => { btn.textContent = '▶ 播放'; }, 500);
+            }
         }
 
         function handleRecord(idx) {
