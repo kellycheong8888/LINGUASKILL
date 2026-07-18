@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Azure TTS API for Linguaskill",
   "main": "tts.js",
-  "scripts": {
-    "start": "node tts.js"
-  },
   "dependencies": {
     "axios": "^1.6.0"
   },
