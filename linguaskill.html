@@ -1,0 +1,2745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linguaskill Business Speaking - Set A</title>
+    <style>
+        /* ============================================================
+           Global Reset & Base
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #2d3a4a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            color: #1d2b3e;
+        }
+
+        .container {
+            max-width: 980px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            padding: 28px 32px 24px;
+            transition: all 0.2s ease;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #dce1e8;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #002b54;
+        }
+        .brand sup {
+            font-size: 0.5rem;
+            font-weight: 400;
+            color: #5a6c7e;
+            top: -0.6em;
+        }
+        .brand .light {
+            font-weight: 300;
+            color: #2a4058;
+        }
+
+        .badge {
+            background: #002b54;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+        }
+
+        .part-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1d2b3e;
+        }
+
+        .part-sub {
+            font-size: 0.8rem;
+            color: #5a6c7e;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header-progress {
+            font-size: 0.8rem;
+            color: #5a6c7e;
+        }
+        .header-progress strong {
+            color: #002b54;
+        }
+
+        /* ============================================================
+           PHASE BAR (Listen → Think → Speak)
+           ============================================================ */
+        .phase-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0 18px;
+            padding: 6px 14px;
+            background: #eef1f5;
+            border-radius: 30px;
+            border: 1px solid #dce1e8;
+        }
+
+        .phase-bar .label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #5a6c7e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .phase-bar .label.active {
+            color: #002b54;
+        }
+
+        .phase-track {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 6px;
+            background: #c8d0d9;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .phase-track .seg {
+            flex: 1;
+            height: 100%;
+            border-radius: 4px;
+            background: #c8d0d9;
+            transition: background 0.4s;
+        }
+        .phase-track .seg.active-listen {
+            background: #0055a4;
+        }
+        .phase-track .seg.active-think {
+            background: #f5a623;
+        }
+        .phase-track .seg.active-speak {
+            background: #1e8e3e;
+        }
+
+        .phase-track .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #002b54;
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .phase-track .pointer.hidden {
+            display: none;
+        }
+
+        .phase-timer {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #002b54;
+            min-width: 44px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .phase-timer.warning {
+            color: #d32f2f;
+            animation: pulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.06);
+            }
+        }
+
+        /* ============================================================
+           ACTION COMMAND
+           ============================================================ */
+        .action-command {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #002b54;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 3px solid #f5a623;
+            line-height: 1.3;
+        }
+        .action-command .sub {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: #5a6c7e;
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           CONTENT AREA
+           ============================================================ */
+        .content-area {
+            min-height: 240px;
+            background: #fafcfe;
+            border-radius: 16px;
+            padding: 20px 24px;
+            border: 1px solid #dce1e8;
+            margin-bottom: 18px;
+            transition: background 0.2s;
+        }
+
+        /* ============================================================
+           START PAGE
+           ============================================================ */
+        .start-page {
+            text-align: center;
+            padding: 20px 10px 10px;
+        }
+        .start-page .icon {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+        }
+        .start-page h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #002b54;
+            margin-bottom: 4px;
+        }
+        .start-page .subtitle {
+            font-size: 1rem;
+            color: #5a6c7e;
+            margin-bottom: 20px;
+        }
+        .start-page .info-box {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 16px 22px;
+            text-align: left;
+            max-width: 520px;
+            margin: 0 auto 24px;
+            border: 1px solid #dce1e8;
+            line-height: 1.8;
+            font-size: 0.92rem;
+            color: #1d2b3e;
+        }
+        .start-page .info-box ul {
+            padding-left: 20px;
+            margin: 4px 0;
+        }
+        .start-page .info-box ul li {
+            margin-bottom: 2px;
+        }
+        .start-page .btn-start {
+            padding: 14px 56px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            background: #002b54;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(0, 43, 84, 0.25);
+            letter-spacing: 0.5px;
+        }
+        .start-page .btn-start:hover {
+            background: #001a33;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 43, 84, 0.35);
+        }
+        .start-page .btn-start:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ============================================================
+           TWO-COLUMN LAYOUT (Parts 1-4)
+           ============================================================ */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .col-left .task-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #002b54;
+            margin-bottom: 6px;
+        }
+
+        .col-left .task-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #1d2b3e;
+        }
+        .col-left .task-body ul,
+        .col-left .task-body ol {
+            padding-left: 20px;
+            margin: 4px 0 8px;
+        }
+        .col-left .task-body li {
+            margin-bottom: 3px;
+        }
+        .col-left .task-body .subnote {
+            color: #5a6c7e;
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }
+
+        .col-right {
+            background: #f7faff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid #dce1e8;
+        }
+        .col-right .chart-title {
+            font-weight: 600;
+            color: #002b54;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .col-right .tip-text {
+            font-size: 0.88rem;
+            line-height: 1.7;
+            color: #1d2b3e;
+        }
+        .col-right .tip-text ul {
+            padding-left: 18px;
+            margin: 4px 0;
+        }
+        .col-right .tip-text ul li {
+            margin-bottom: 2px;
+        }
+
+        /* ---- SMS Bubble (Part 3 left) ---- */
+        .sms-bubble {
+            background: #e3ecf5;
+            padding: 12px 16px;
+            border-radius: 12px 12px 12px 4px;
+            margin: 6px 0 10px;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: #1d2b3e;
+            border-left: 4px solid #002b54;
+        }
+        .sms-bubble .sender {
+            font-weight: 600;
+            color: #002b54;
+        }
+
+        /* ---- Chat Column (Part 3 left) ---- */
+        .chat-column {
+            background: #f7fafc;
+            border-radius: 14px;
+            padding: 14px 16px 10px;
+            border: 1px solid #dce1e8;
+        }
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dce1e8;
+        }
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #002b54;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .chat-name {
+            font-weight: 600;
+            color: #1d2b3e;
+            font-size: 0.9rem;
+        }
+        .chat-status {
+            font-size: 0.7rem;
+            color: #5a6c7e;
+            margin-left: auto;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message .time {
+            font-size: 0.65rem;
+            color: #5a6c7e;
+            font-weight: 500;
+        }
+        .message .bubble {
+            background: #e3ecf5;
+            padding: 8px 14px;
+            border-radius: 12px 12px 12px 4px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #1d2b3e;
+            margin-top: 2px;
+            border-left: 3px solid #002b54;
+        }
+        .message .bubble .highlight {
+            background: #fff8e1;
+            padding: 0 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ---- Brochure Column (Part 3 right) ---- */
+        .brochure-column {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 14px 16px 10px;
+            border: 1px solid #dce1e8;
+        }
+        .brochure-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #002b54;
+            margin-bottom: 2px;
+        }
+        .brochure-sub {
+            font-size: 0.75rem;
+            color: #5a6c7e;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dce1e8;
+        }
+
+        .section-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #1d2b3e;
+            margin: 10px 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-label:first-of-type {
+            margin-top: 0;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+        .service-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 8px 10px;
+            border: 1px solid #dce1e8;
+        }
+        .service-card .name {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #002b54;
+            margin-bottom: 2px;
+        }
+        .service-card .feature {
+            font-size: 0.72rem;
+            line-height: 1.5;
+            color: #1d2b3e;
+            padding: 1px 0;
+        }
+        .service-card .feature .icon {
+            margin-right: 3px;
+        }
+
+        .eval-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2px;
+        }
+        .eval-table th {
+            background: #002b54;
+            color: #fff;
+            padding: 5px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+        .eval-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #dce1e8;
+            background: #fafcfe;
+        }
+        .eval-table tr:last-child td {
+            border-bottom: none;
+        }
+        .eval-table .dimension {
+            font-weight: 600;
+            color: #1d2b3e;
+            font-size: 0.75rem;
+        }
+        .eval-table .stars {
+            color: #f5a623;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+        }
+        .eval-table .score {
+            font-weight: 600;
+            color: #002b54;
+            font-size: 0.7rem;
+        }
+        .eval-table .tag {
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: 12px;
+            margin-left: 4px;
+        }
+        .eval-table .tag.premium {
+            color: #d32f2f;
+            background: #ffebee;
+        }
+        .eval-table .tag.lowcost {
+            color: #1e8e3e;
+            background: #e8f5e9;
+        }
+
+        .feedback-section {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 4px 0 2px;
+            border: 1px solid #dce1e8;
+        }
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem;
+        }
+        .feedback-table td {
+            padding: 2px 4px;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .feedback-table tr:last-child td {
+            border-bottom: none;
+        }
+        .feedback-table .flabel {
+            font-weight: 500;
+            color: #1d2b3e;
+            font-size: 0.7rem;
+        }
+        .feedback-table .bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .feedback-table .bar {
+            flex: 1;
+            height: 4px;
+            background: #dce1e8;
+            border-radius: 4px;
+            overflow: hidden;
+            min-width: 30px;
+        }
+        .feedback-table .bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s;
+        }
+        .feedback-table .bar .fill.green {
+            background: #1e8e3e;
+        }
+        .feedback-table .bar .fill.yellow {
+            background: #f5a623;
+        }
+        .feedback-table .bar .fill.red {
+            background: #d32f2f;
+        }
+        .feedback-table .pct {
+            font-weight: 600;
+            font-size: 0.65rem;
+            min-width: 24px;
+            text-align: right;
+        }
+        .feedback-table .pct.green {
+            color: #1e8e3e;
+        }
+        .feedback-table .pct.yellow {
+            color: #f5a623;
+        }
+        .feedback-table .pct.red {
+            color: #d32f2f;
+        }
+
+        .requirements-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px 16px;
+            padding: 4px 2px;
+        }
+        .requirements-list .item {
+            font-size: 0.72rem;
+            line-height: 1.6;
+            color: #1d2b3e;
+        }
+        .requirements-list .item .icon {
+            margin-right: 3px;
+        }
+
+        .outcome-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 2px;
+        }
+        .outcome-item {
+            background: #eef6fe;
+            border-radius: 8px;
+            padding: 6px 4px;
+            text-align: center;
+            border: 1px solid #dce1e8;
+        }
+        .outcome-item .oicon {
+            font-size: 1rem;
+        }
+        .outcome-item .ovalue {
+            font-weight: 700;
+            color: #002b54;
+            font-size: 0.95rem;
+        }
+        .outcome-item .odesc {
+            font-size: 0.6rem;
+            color: #5a6c7e;
+            line-height: 1.2;
+        }
+
+        /* ============================================================
+           RECORD SECTION
+           ============================================================ */
+        .record-section {
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 1px solid #dce1e8;
+        }
+
+        .record-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .record-status-text {
+            font-size: 0.85rem;
+            color: #5a6c7e;
+        }
+        .record-status-text.recording {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+        .record-status-text.done {
+            color: #1e8e3e;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 22px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: #002b54;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 43, 84, 0.15);
+            min-width: 120px;
+            justify-content: center;
+        }
+        .action-btn:hover:not(:disabled) {
+            background: #001a33;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 43, 84, 0.2);
+        }
+        .action-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .action-btn.recording {
+            background: #d32f2f;
+            animation: btn-pulse 1s ease-in-out infinite;
+        }
+        .action-btn.recording:hover:not(:disabled) {
+            background: #b71c1c;
+        }
+        @keyframes btn-pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        .action-btn.done {
+            background: #1e8e3e;
+            cursor: default;
+        }
+        .action-btn.done:hover {
+            background: #1e8e3e;
+            transform: none;
+        }
+        .action-btn.secondary {
+            background: #dce1e8;
+            color: #1d2b3e;
+            box-shadow: none;
+        }
+        .action-btn.secondary:hover:not(:disabled) {
+            background: #c8cfd9;
+        }
+
+        .record-progress {
+            margin-top: 8px;
+            width: 100%;
+            height: 5px;
+            background: #dce1e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .record-progress .fill {
+            height: 100%;
+            width: 100%;
+            background: #002b54;
+            border-radius: 4px;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+        .record-progress .fill.warning {
+            background: #d32f2f;
+        }
+
+        .speech-box {
+            margin: 10px 0 2px;
+        }
+        .speech-box textarea {
+            width: 100%;
+            min-height: 56px;
+            padding: 8px 12px;
+            border: 2px solid #dce1e8;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-family: inherit;
+            resize: vertical;
+            background: #ffffff;
+            transition: border-color 0.25s;
+            color: #1d2b3e;
+            line-height: 1.5;
+        }
+        .speech-box textarea:focus {
+            outline: none;
+            border-color: #002b54;
+            box-shadow: 0 0 0 3px rgba(0, 43, 84, 0.08);
+        }
+        .speech-box textarea::placeholder {
+            color: #aab8c7;
+        }
+
+        /* ============================================================
+           TTS INDICATOR
+           ============================================================ */
+        .tts-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eef1f5;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #002b54;
+            margin: 4px 0 8px;
+        }
+        .tts-indicator .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5a6c7e;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .tts-indicator .dot.playing {
+            background: #1e8e3e;
+            animation: blink-dot 0.8s ease-in-out infinite;
+        }
+        @keyframes blink-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        /* ============================================================
+           BEEP FLASH
+           ============================================================ */
+        .beep-flash {
+            display: inline-block;
+            background: #d32f2f;
+            color: #fff;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            animation: beep-blink 0.5s ease 3;
+            margin-left: 6px;
+        }
+        @keyframes beep-blink {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.2;
+                transform: scale(0.9);
+            }
+        }
+
+        /* ============================================================
+           WARMUP
+           ============================================================ */
+        .warmup-question-card {
+            background: #f7faff;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border-left: 5px solid #002b54;
+            margin: 4px 0 12px;
+        }
+        .warmup-question-card .q-number {
+            font-weight: 700;
+            color: #002b54;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .warmup-question-card .q-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-top: 3px;
+            color: #1d2b3e;
+        }
+        .warmup-question-card .q-progress {
+            font-size: 0.8rem;
+            color: #5a6c7e;
+            margin-top: 6px;
+        }
+
+        /* ============================================================
+           COMPLETE
+           ============================================================ */
+        .complete-wrap {
+            text-align: center;
+            padding: 24px 10px 16px;
+        }
+        .complete-wrap .icon {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+        }
+        .complete-wrap h2 {
+            color: #002b54;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .complete-wrap p {
+            color: #4a5a6a;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        .complete-wrap .btn-close {
+            margin-top: 20px;
+            padding: 10px 44px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            background: #002b54;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .complete-wrap .btn-close:hover {
+            background: #001a33;
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #dce1e8;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 5px;
+        }
+        .dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dce1e8;
+            display: inline-block;
+        }
+        .dots span.active {
+            background: #002b54;
+        }
+        .dots span.completed {
+            background: #1e8e3e;
+        }
+
+        .footer-status {
+            font-size: 0.8rem;
+            color: #5a6c7e;
+            margin-left: 8px;
+        }
+
+        .btn-next {
+            padding: 8px 32px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: #002b54;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 43, 84, 0.12);
+        }
+        .btn-next:hover:not(:disabled) {
+            background: #001a33;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 43, 84, 0.2);
+        }
+        .btn-next:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-next .arrow {
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 820px) {
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .service-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .requirements-list {
+                grid-template-columns: 1fr;
+            }
+            .outcome-grid {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 18px 16px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .header-right {
+                justify-content: space-between;
+            }
+            .phase-bar {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px 12px;
+            }
+            .phase-timer {
+                font-size: 1rem;
+                min-width: 36px;
+            }
+            .action-command {
+                font-size: 1.1rem;
+            }
+            .content-area {
+                padding: 14px 14px;
+                min-height: 160px;
+            }
+            .record-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .action-btn {
+                width: 100%;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-next {
+                width: 100%;
+                text-align: center;
+            }
+            .start-page h1 {
+                font-size: 1.5rem;
+            }
+            .start-page .btn-start {
+                padding: 12px 36px;
+                font-size: 1rem;
+                width: 100%;
+            }
+            .outcome-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px 10px;
+            }
+            .brand {
+                font-size: 0.85rem;
+            }
+            .phase-label-left,
+            .phase-label-right {
+                font-size: 0.5rem;
+            }
+            .phase-timer {
+                font-size: 0.9rem;
+                min-width: 30px;
+            }
+            .action-command {
+                font-size: 0.95rem;
+            }
+            .action-command .sub {
+                font-size: 0.75rem;
+            }
+            .content-area {
+                padding: 10px 10px;
+            }
+            .eval-table {
+                font-size: 0.65rem;
+            }
+            .eval-table th,
+            .eval-table td {
+                padding: 3px 5px;
+            }
+            .feedback-table {
+                font-size: 0.6rem;
+            }
+            .feedback-table .bar {
+                min-width: 16px;
+            }
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+            .outcome-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .warmup-question-card .q-text {
+                font-size: 0.95rem;
+            }
+            .start-page .info-box {
+                padding: 12px 14px;
+                font-size: 0.82rem;
+            }
+            .two-column {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <div class="header-left">
+                <span class="brand">Linguaskill<sup>®</sup> <span class="light">BUSINESS</span></span>
+                <span class="badge" id="headerBadge">准备</span>
+                <span class="part-title" id="headerTitle">Start</span>
+                <span class="part-sub" id="headerSub">点击开始考试</span>
+            </div>
+            <div class="header-right">
+                <span class="header-progress" id="headerProgress">Ready</span>
+            </div>
+        </div>
+
+        <!-- ===== PHASE BAR ===== -->
+        <div class="phase-bar" id="phaseBar">
+            <span class="label" id="phaseLabelListen">● Listen</span>
+            <div class="phase-track" id="phaseTrack">
+                <div class="seg" id="segListen"></div>
+                <div class="seg" id="segThink"></div>
+                <div class="seg" id="segSpeak"></div>
+                <div class="pointer hidden" id="phasePointer"></div>
+            </div>
+            <span class="label" id="phaseLabelSpeak">Speak ●</span>
+            <span class="phase-timer" id="phaseTimer">--</span>
+        </div>
+
+        <!-- ===== ACTION COMMAND ===== -->
+        <div class="action-command" id="actionCommand">
+            Ready to start?
+            <span class="sub" id="actionSub">Click "Start Test" below to begin</span>
+        </div>
+
+        <!-- ===== CONTENT ===== -->
+        <div class="content-area" id="contentArea">
+            <!-- Dynamic render -->
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div class="dots" id="dotIndicator">
+                    <span class="active"></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="footer-status" id="footerStatus">Ready</span>
+            </div>
+            <button class="btn-next" id="btnNext" disabled>
+                Next <span class="arrow">➜</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        /**
+         * ============================================================
+         *  Linguaskill Business Speaking — Full Simulation
+         *  Set A | Start Page + BEEP + TTS + Auto-Record + 4s Pause
+         * ============================================================
+         */
+
+        // ============================================================
+        //  1. EXAM DATA (Set A)
+        // ============================================================
+
+        const EXAM_DATA = {
+            warmup: {
+                type: 'warmup',
+                label: 'Warm-up',
+                name: 'Warm-up',
+                sub: 'Unmarked · 20s each',
+                questions: [
+                    'Could you tell me your full name and candidate number?',
+                    'What do you like most about your current accommodation?',
+                    'Why did you choose your current career path or major of study?'
+                ],
+                speakTime: 20
+            },
+            part1: {
+                type: 'part1',
+                label: 'Part 1/5',
+                name: 'Presentation',
+                sub: 'Topic talk',
+                prepareTime: 40,
+                speakTime: 60,
+                task: {
+                    title: 'An Important Mentor',
+                    description: 'Talk about a manager, teacher, or colleague who has significantly influenced your professional growth.',
+                    bullets: [
+                        'who this person is and how you met them',
+                        'what valuable advice or skills they shared with you',
+                        'how their guidance impacts your work or studies today'
+                    ]
+                }
+            },
+            part2_1: {
+                type: 'part2_1',
+                label: 'Part 2/5',
+                name: 'Summary',
+                sub: 'Information summary',
+                prepareTime: 0,
+                speakTime: 40,
+                audioText: `"Hello everyone, I have a few vital updates regarding our upcoming Annual Gala next month. First, attendance is mandatory for all local staff, as the CEO will be delivering the keynote speech, which will impact department evaluation metrics. Second, any employee who has specific dietary restrictions, such as vegetarian or gluten-free requirements, must notify the catering committee via email before this Friday. Third, the final performance will be a collaborative talent show, but teams are completely free to decide their own rehearsal schedules during office hours. Lastly, because parking at the hotel venue is extremely limited, we highly encourage carpooling or public transport, and you must book a seat on the company shuttle bus through the internal app by Wednesday, otherwise you will need to arrange your own transportation. Thank you for your cooperation."`,
+                task: {
+                    title: 'Annual Gala Arrangements',
+                    description: 'Your colleague attended a meeting but had to leave early. Summarize the 3-4 key points for your manager.'
+                }
+            },
+            part2_2: {
+                type: 'part2_2',
+                label: 'Part 2/5',
+                name: 'Discussion',
+                sub: 'Questions & answers',
+                prepareTime: 0,
+                speakTime: 20,
+                questions: [
+                    'Do you think annual company events are beneficial for improving employee morale? Why?',
+                    'In your opinion, should companies allow employees to spend working hours on social activities?',
+                    'How do you expect corporate celebrations and team-building events to change in the future?'
+                ],
+                task: {
+                    title: 'Company Benefits & Team Cohesion',
+                    description: 'Answer 3 follow-up questions on the same topic. You have 20 seconds per question.'
+                }
+            },
+            part3: {
+                type: 'part3',
+                label: 'Part 3/5',
+                name: 'Recommendation',
+                sub: 'Recommendation',
+                prepareTime: 80,
+                speakTime: 90,
+                task: {
+                    title: 'E-commerce Logistics Partner Selection',
+                    description: 'Your friend Sarah needs to choose a new logistics partner. Read her message and the data below, then make a recommendation.',
+                    friendMessage: `Hi! My fashion retail brand is expanding, and I need to select a new e-commerce logistics partner. My top priority is fast shipping speed because customers complain about delays. Also, I need a provider that offers excellent customer tracking tools so buyers can see where their packages are. Since we just secured a new investment round, we have a very flexible budget and don't mind paying premium rates. Look at these two shipping companies and tell me what you think!`,
+                    table: {
+                        headers: ['Criteria', 'SwiftDelivery', 'EcoFreight'],
+                        rows: [
+                            ['⚡ Shipping Speed', '⭐⭐⭐⭐⭐ 5.0', '⭐⭐⭐☆☆ 3.0'],
+                            ['📍 Tracking Quality', '⭐⭐⭐⭐⭐ 4.8', '⭐⭐☆☆☆ 2.0'],
+                            ['💰 Value for Money', '⭐☆☆☆☆ 1.5 (Premium)', '⭐⭐⭐⭐⭐ 4.9 (Low Cost)'],
+                            ['📊 Overall Satisfaction', '⭐⭐⭐⭐☆ 4.3', '⭐⭐⭐⭐☆ 4.0']
+                        ]
+                    },
+                    serviceDetails: {
+                        swift: ['📦 2-day express delivery', '📱 Real-time tracking', '💰 Premium pricing',
+                            '🏆 24/7 support', '📊 86% satisfaction'
+                        ],
+                        eco: ['🌱 Carbon-neutral shipping', '📱 Basic tracking', '💰 Budget-friendly',
+                            '🏆 Email support', '📊 80% satisfaction'
+                        ]
+                    },
+                    feedback: {
+                        rows: [
+                            ['Shipping Speed', 92, 5, 3],
+                            ['Customer Support', 78, 12, 10],
+                            ['Price Satisfaction', 45, 25, 30]
+                        ]
+                    },
+                    requirements: [
+                        'Minimum order: 100 units/month',
+                        'Contract term: 6 months minimum',
+                        'API integration support',
+                        'Dedicated account manager'
+                    ],
+                    outcomes: [
+                        { icon: '📈', value: '86%', desc: 'Would recommend SwiftDelivery' },
+                        { icon: '🚀', value: '73%', desc: 'Satisfied with shipping speed' },
+                        { icon: '💰', value: '68%', desc: 'Consider pricing reasonable' },
+                        { icon: '⭐', value: '4.3', desc: 'Overall satisfaction rating' }
+                    ]
+                }
+            },
+            part4: {
+                type: 'part4',
+                label: 'Part 4/5',
+                name: 'Argument',
+                sub: 'Argument presentation',
+                prepareTime: 40,
+                speakTime: 90,
+                task: {
+                    title: 'Corporate Dress Codes',
+                    statement: '"Modern businesses should completely abandon formal dress codes and allow employees to wear whatever they feel comfortable in, including shorts and t-shirts."',
+                    description: 'Present your opinion on this statement. Discuss advantages and drawbacks, then give your conclusion.',
+                    pros: ['Increased Comfort: Reduces stress and boosts creativity.', 'Authentic Culture: Attracts young talent with an open culture.'],
+                    cons: ['Professional Image: Casual dress may jeopardize client trust.',
+                        'Psychological Mindset: Formal wear helps separate work from personal life.'
+                    ]
+                }
+            }
+        };
+
+        // ============================================================
+        //  2. STATE
+        // ============================================================
+
+        const STATE = {
+            phase: 'start',
+            subPhase: 'idle',
+            warmupQuestionIndex: 0,
+            questionIndex: 0,
+            timerId: null,
+            timeRemaining: 0,
+            totalTime: 0,
+            recognition: null,
+            isRecording: false,
+            ttsUtterance: null,
+            isTTSPlaying: false,
+            hasAutoAdvanced: false,
+            isAutoRecordTriggered: false,
+            isWarmupTTSPlaying: false,
+            isStarted: false,
+        };
+
+        // ============================================================
+        //  3. DOM REFS
+        // ============================================================
+
+        const $ = (id) => document.getElementById(id);
+        const dom = {
+            headerBadge: $('headerBadge'),
+            headerTitle: $('headerTitle'),
+            headerSub: $('headerSub'),
+            headerProgress: $('headerProgress'),
+            phaseLabelListen: $('phaseLabelListen'),
+            phaseLabelSpeak: $('phaseLabelSpeak'),
+            segListen: $('segListen'),
+            segThink: $('segThink'),
+            segSpeak: $('segSpeak'),
+            phasePointer: $('phasePointer'),
+            phaseTimer: $('phaseTimer'),
+            actionCommand: $('actionCommand'),
+            actionSub: $('actionSub'),
+            contentArea: $('contentArea'),
+            dotIndicator: $('dotIndicator'),
+            footerStatus: $('footerStatus'),
+            btnNext: $('btnNext'),
+        };
+
+        // ============================================================
+        //  4. UTILITY
+        // ============================================================
+
+        function formatTime(seconds) {
+            if (seconds < 0) seconds = 0;
+            return String(Math.ceil(seconds)).padStart(2, '0');
+        }
+
+        function getPhaseData(phaseKey) {
+            const map = {
+                warmup: EXAM_DATA.warmup,
+                part1: EXAM_DATA.part1,
+                part2_1: EXAM_DATA.part2_1,
+                part2_2: EXAM_DATA.part2_2,
+                part3: EXAM_DATA.part3,
+                part4: EXAM_DATA.part4,
+            };
+            return map[phaseKey] || null;
+        }
+
+        function updateDots(current, total) {
+            const dots = dom.dotIndicator.querySelectorAll('span');
+            dots.forEach((dot, i) => {
+                dot.className = '';
+                if (i < current) dot.classList.add('completed');
+                else if (i === current) dot.classList.add('active');
+            });
+        }
+
+        // ⭐ 新增：sleep 工具函数
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ============================================================
+        //  5. BEEP (Web Audio API)
+        // ============================================================
+
+        function playBeep(frequency = 800, duration = 200, volume = 0.5) {
+            return new Promise((resolve) => {
+                try {
+                    const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = frequency;
+                    gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration / 1000);
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + duration / 1000);
+                    showBeepVisual();
+                    setTimeout(resolve, duration + 100);
+                } catch (e) {
+                    showBeepVisual();
+                    setTimeout(resolve, 300);
+                }
+            });
+        }
+
+        function showBeepVisual() {
+            const flash = document.createElement('div');
+            flash.style.cssText =
+                'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(211,47,47,0.12);border:4px solid #d32f2f;border-radius:50%;width:180px;height:180px;pointer-events:none;z-index:999;animation:beep-blink 0.5s ease 3;';
+            flash.id = 'beepFlashOverlay';
+            document.body.appendChild(flash);
+            setTimeout(() => { if (flash.parentNode) flash.remove(); }, 1600);
+        }
+
+        // ============================================================
+        //  6. PHASE BAR CONTROL
+        // ============================================================
+
+        function setPhase(phase) {
+            const segs = { listen: dom.segListen, think: dom.segThink, speak: dom.segSpeak };
+            Object.values(segs).forEach(el => el.className = 'seg');
+            dom.phaseLabelListen.className = 'label';
+            dom.phaseLabelSpeak.className = 'label';
+
+            if (phase === 'listen') {
+                segs.listen.classList.add('active-listen');
+                dom.phaseLabelListen.classList.add('active');
+                dom.phasePointer.style.left = '15%';
+                dom.phasePointer.classList.remove('hidden');
+            } else if (phase === 'think') {
+                segs.listen.classList.add('active-listen');
+                segs.think.classList.add('active-think');
+                dom.phaseLabelListen.classList.add('active');
+                dom.phasePointer.style.left = '50%';
+                dom.phasePointer.classList.remove('hidden');
+            } else if (phase === 'speak') {
+                segs.listen.classList.add('active-listen');
+                segs.think.classList.add('active-think');
+                segs.speak.classList.add('active-speak');
+                dom.phaseLabelListen.classList.add('active');
+                dom.phaseLabelSpeak.classList.add('active');
+                dom.phasePointer.style.left = '85%';
+                dom.phasePointer.classList.remove('hidden');
+            } else {
+                dom.phasePointer.classList.add('hidden');
+            }
+        }
+
+        function updateTimer(remaining, total) {
+            dom.phaseTimer.textContent = formatTime(remaining);
+            if (remaining <= 10 && remaining > 0) {
+                dom.phaseTimer.classList.add('warning');
+            } else {
+                dom.phaseTimer.classList.remove('warning');
+            }
+        }
+
+        // ============================================================
+        //  7. START PAGE
+        // ============================================================
+
+        function renderStartPage() {
+            dom.headerBadge.textContent = 'Start';
+            dom.headerTitle.textContent = 'Speaking Test';
+            dom.headerSub.textContent = 'Set A';
+            dom.headerProgress.textContent = 'Click Start to begin';
+            dom.actionCommand.innerHTML = `
+                Ready to start?
+                <span class="sub">Click "Start Test" below to begin</span>
+            `;
+            dom.phaseTimer.textContent = '--';
+            dom.phaseTimer.classList.remove('warning');
+            dom.footerStatus.textContent = 'Ready';
+            setPhase('idle');
+            dom.btnNext.disabled = true;
+            dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+            dom.dotIndicator.querySelectorAll('span').forEach(d => d.className = '');
+
+            dom.contentArea.innerHTML = `
+                <div class="start-page">
+                    <div class="icon">🎤</div>
+                    <h1>Linguaskill Business</h1>
+                    <p class="subtitle">Speaking Practice Test · Set A</p>
+                    <div class="info-box">
+                        <strong>📋 Test Information:</strong>
+                        <ul>
+                            <li>Total duration: <strong>~16 minutes</strong></li>
+                            <li>Includes <strong>Warm-up (unmarked)</strong> + 5 Parts</li>
+                            <li>Each Part has <strong>Preparation</strong> and <strong>Speaking</strong> time</li>
+                            <li>Recording starts <strong>automatically</strong> after preparation</li>
+                            <li>Recording stops <strong>automatically</strong> when time is up</li>
+                        </ul>
+                        <div style="margin-top:8px;background:#fff8e1;padding:6px 12px;border-radius:8px;border-left:3px solid #f5a623;">
+                            💡 Please ensure <strong>microphone access</strong> is enabled and wear your headphones.
+                        </div>
+                    </div>
+                    <button class="btn-start" id="btnStartTest">
+                        ▶ Start Test
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('btnStartTest').addEventListener('click', onStartTest);
+        }
+
+        // ============================================================
+        //  8. START → BEEP → WARMUP
+        // ============================================================
+
+        async function onStartTest() {
+            if (STATE.isStarted) return;
+            STATE.isStarted = true;
+
+            const btn = document.getElementById('btnStartTest');
+            btn.disabled = true;
+            btn.textContent = '⏳ Starting...';
+
+            dom.actionCommand.innerHTML = `
+                Starting test...
+                <span class="sub">🔊 Preparing BEEP</span>
+            `;
+            dom.footerStatus.textContent = 'Starting...';
+            dom.headerBadge.textContent = 'Warm-up';
+            dom.headerProgress.textContent = 'Question 1/3';
+
+            await playBeep(880, 300, 0.6);
+            await new Promise(r => setTimeout(r, 300));
+
+            dom.actionCommand.innerHTML = `
+                Test started!
+                <span class="sub">🎤 Warm-up questions will be read aloud</span>
+            `;
+
+            STATE.warmupQuestionIndex = 0;
+            dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+            dom.btnNext.disabled = true;
+            renderWarmupQuestion();
+        }
+
+        // ============================================================
+        //  9. WARMUP (with 4s pause)
+        // ============================================================
+
+        function renderWarmupQuestion() {
+            const data = EXAM_DATA.warmup;
+            const idx = STATE.warmupQuestionIndex;
+            const total = data.questions.length;
+            const question = data.questions[idx] || '';
+
+            dom.headerBadge.textContent = 'Warm-up';
+            dom.headerTitle.textContent = 'Warm-up';
+            dom.headerSub.textContent = 'Unmarked';
+            dom.headerProgress.textContent = `Question ${idx + 1}/${total}`;
+            dom.actionCommand.innerHTML = `
+                Listen to the question
+                <span class="sub">🔊 TTS will read the question aloud</span>
+            `;
+            dom.footerStatus.textContent = `Question ${idx + 1}/${total}`;
+            updateDots(idx, total);
+
+            dom.contentArea.innerHTML = `
+                <div class="warmup-question-card">
+                    <div class="q-number">Question ${idx + 1} / ${total}</div>
+                    <div class="q-text">${question}</div>
+                    <div class="q-progress">⏱ Speaking time: <strong>${data.speakTime}s</strong></div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>
+                            ⏳ Preparing...
+                        </button>
+                        <span class="record-status-text" id="recordStatus">⏳ TTS playing...</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+                ${idx < total - 1 ?
+                    `<div style="margin-top:8px;color:#5a6c7e;font-size:0.85rem;">✅ After answering, you will proceed to the next question</div>` :
+                    `<div style="margin-top:8px;color:#5a6c7e;font-size:0.85rem;">✅ This is the last warm-up question. Next: Part 1</div>`
+                }
+            `;
+
+            setPhase('listen');
+            dom.phaseTimer.textContent = '--';
+            dom.phaseTimer.classList.remove('warning');
+
+            playWarmupTTS(question);
+        }
+
+        async function playWarmupTTS(text) {
+            if (!window.speechSynthesis) {
+                dom.footerStatus.textContent = '⚠️ TTS unavailable';
+                await playBeep(800, 200, 0.5);
+                startWarmupAutoRecord();
+                return;
+            }
+
+            dom.footerStatus.textContent = 'TTS playing...';
+            dom.actionCommand.innerHTML = `
+                Listening to the question
+                <span class="sub">🔊 TTS is reading the question aloud</span>
+            `;
+            setPhase('listen');
+            dom.phaseTimer.textContent = '--';
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+            STATE.ttsUtterance = utterance;
+            STATE.isWarmupTTSPlaying = true;
+
+            utterance.onend = async () => {
+                STATE.isWarmupTTSPlaying = false;
+                STATE.ttsUtterance = null;
+                dom.footerStatus.textContent = 'TTS complete';
+
+                // ⭐ 4秒停顿
+                dom.actionCommand.innerHTML = `
+                    ⏳ Preparing...
+                    <span class="sub">Please prepare your answer (4s)</span>
+                `;
+                dom.footerStatus.textContent = 'Preparing... 4s';
+                await sleep(4000);
+
+                await playBeep(800, 200, 0.5);
+                dom.actionCommand.innerHTML = `
+                    Speak your answer
+                    <span class="sub">You have ${EXAM_DATA.warmup.speakTime}s to answer</span>
+                `;
+                startWarmupAutoRecord();
+            };
+
+            utterance.onerror = async () => {
+                STATE.isWarmupTTSPlaying = false;
+                STATE.ttsUtterance = null;
+                dom.footerStatus.textContent = 'TTS error';
+                await playBeep(800, 200, 0.5);
+                startWarmupAutoRecord();
+            };
+
+            window.speechSynthesis.speak(utterance);
+
+            setTimeout(async () => {
+                if (STATE.isWarmupTTSPlaying) {
+                    window.speechSynthesis.cancel();
+                    STATE.isWarmupTTSPlaying = false;
+                    STATE.ttsUtterance = null;
+                    dom.footerStatus.textContent = 'TTS timeout';
+                    await playBeep(800, 200, 0.5);
+                    startWarmupAutoRecord();
+                }
+            }, 15000);
+        }
+
+        function startWarmupAutoRecord() {
+            const data = EXAM_DATA.warmup;
+            const total = data.speakTime || 20;
+
+            const btn = document.getElementById('recordBtn');
+            const status = document.getElementById('recordStatus');
+            const progressFill = document.getElementById('recordProgressFill');
+
+            if (btn) {
+                btn.className = 'action-btn recording';
+                btn.disabled = false;
+                btn.textContent = '🔴 Recording...';
+            }
+            if (status) {
+                status.className = 'record-status-text recording';
+                status.textContent = '🔴 Recording... Please speak';
+            }
+
+            setPhase('speak');
+            dom.phaseTimer.textContent = formatTime(total);
+            dom.phaseTimer.classList.remove('warning');
+            dom.footerStatus.textContent = `Recording ${total}s`;
+
+            startSpeechRecognition('warmup');
+
+            STATE.subPhase = 'speaking';
+            STATE.timeRemaining = total;
+            STATE.totalTime = total;
+
+            if (progressFill) {
+                progressFill.style.width = '100%';
+                progressFill.classList.remove('warning');
+            }
+
+            clearInterval(STATE.timerId);
+            STATE.timerId = setInterval(() => {
+                STATE.timeRemaining -= 0.1;
+                const display = Math.ceil(STATE.timeRemaining);
+                dom.phaseTimer.textContent = formatTime(STATE.timeRemaining);
+                dom.phaseTimer.classList.toggle('warning', display <= 10 && display > 0);
+                dom.footerStatus.textContent = `Recording ${formatTime(STATE.timeRemaining)}s`;
+
+                if (progressFill) {
+                    const pct = total > 0 ? Math.max(0, (STATE.timeRemaining / total) * 100) : 0;
+                    progressFill.style.width = pct + '%';
+                    progressFill.classList.toggle('warning', STATE.timeRemaining <= 10 && STATE.timeRemaining > 0);
+                }
+
+                if (STATE.timeRemaining <= 0) {
+                    clearInterval(STATE.timerId);
+                    dom.phaseTimer.textContent = '00';
+                    dom.phaseTimer.classList.remove('warning');
+                    if (progressFill) {
+                        progressFill.style.width = '0%';
+                        progressFill.classList.remove('warning');
+                    }
+                    stopSpeechRecognition();
+                    if (btn) {
+                        btn.className = 'action-btn done';
+                        btn.disabled = true;
+                        btn.textContent = '✅ Done';
+                    }
+                    if (status) {
+                        status.className = 'record-status-text done';
+                        status.textContent = '✅ Complete';
+                    }
+                    dom.footerStatus.textContent = '✅ Complete';
+                    dom.actionCommand.innerHTML = `
+                        ✓ Question completed
+                        <span class="sub">Click "Next" to continue</span>
+                    `;
+                    onWarmupQuestionComplete();
+                }
+            }, 100);
+        }
+
+        function onWarmupQuestionComplete() {
+            const total = EXAM_DATA.warmup.questions.length;
+            if (STATE.warmupQuestionIndex < total - 1) {
+                STATE.warmupQuestionIndex++;
+                dom.btnNext.disabled = false;
+                dom.btnNext.innerHTML = 'Next ➜ <span class="arrow">➜</span>';
+                dom.btnNext.onclick = () => {
+                    dom.btnNext.onclick = null;
+                    dom.btnNext.disabled = true;
+                    dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+                    renderWarmupQuestion();
+                };
+            } else {
+                dom.btnNext.disabled = false;
+                dom.btnNext.innerHTML = 'Start Part 1 ➜ <span class="arrow">➜</span>';
+                dom.btnNext.onclick = () => {
+                    dom.btnNext.onclick = null;
+                    STATE.warmupQuestionIndex = 0;
+                    dom.btnNext.disabled = true;
+                    dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+                    enterPhase('part1');
+                };
+            }
+        }
+
+        // ============================================================
+        //  10. CORE: enterPhase, preparation, auto-record
+        // ============================================================
+
+        function enterPhase(phaseKey) {
+            stopAll();
+            STATE.phase = phaseKey;
+            STATE.subPhase = 'idle';
+            STATE.hasAutoAdvanced = false;
+            STATE.isAutoRecordTriggered = false;
+
+            dom.btnNext.disabled = true;
+            dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+            dom.phaseTimer.classList.remove('warning');
+            dom.phasePointer.classList.remove('hidden');
+
+            const data = getPhaseData(phaseKey);
+            if (data) {
+                dom.headerBadge.textContent = data.label || '';
+                dom.headerTitle.textContent = data.name || '';
+                dom.headerSub.textContent = data.sub || '';
+            }
+
+            switch (phaseKey) {
+                case 'start':
+                    renderStartPage();
+                    break;
+                case 'part1':
+                    renderPart1();
+                    break;
+                case 'part2_1':
+                    renderPart2_1();
+                    break;
+                case 'part2_2':
+                    STATE.questionIndex = 0;
+                    renderPart2_2();
+                    break;
+                case 'part3':
+                    renderPart3();
+                    break;
+                case 'part4':
+                    renderPart4();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function startPreparation(phaseKey) {
+            const data = getPhaseData(phaseKey);
+            if (!data || data.prepareTime <= 0) {
+                startAutoRecord(phaseKey);
+                return;
+            }
+
+            STATE.subPhase = 'thinking';
+            STATE.timeRemaining = data.prepareTime;
+            STATE.totalTime = data.prepareTime;
+            STATE.isAutoRecordTriggered = false;
+
+            dom.phaseTimer.textContent = formatTime(data.prepareTime);
+            dom.phaseTimer.classList.remove('warning');
+            setPhase('think');
+            dom.footerStatus.textContent = `Thinking ${formatTime(data.prepareTime)}s`;
+
+            const btn = document.getElementById('recordBtn');
+            const status = document.getElementById('recordStatus');
+            const progressFill = document.getElementById('recordProgressFill');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = `⏳ Thinking ${formatTime(data.prepareTime)}s`;
+            }
+            if (status) status.textContent = `⏳ Thinking... ${data.prepareTime}s remaining`;
+            if (progressFill) {
+                progressFill.style.width = '100%';
+                progressFill.classList.remove('warning');
+            }
+
+            dom.actionCommand.innerHTML = `
+                Plan your answers
+                <span class="sub">⏱ You have ${data.prepareTime}s to prepare</span>
+            `;
+
+            clearInterval(STATE.timerId);
+            STATE.timerId = setInterval(() => {
+                STATE.timeRemaining -= 0.1;
+                const display = Math.ceil(STATE.timeRemaining);
+                dom.phaseTimer.textContent = formatTime(STATE.timeRemaining);
+                dom.phaseTimer.classList.toggle('warning', display <= 10 && display > 0);
+                dom.footerStatus.textContent = `Thinking ${formatTime(STATE.timeRemaining)}s`;
+
+                if (progressFill) {
+                    const pct = data.prepareTime > 0 ? Math.max(0, (STATE.timeRemaining / data.prepareTime) * 100) : 0;
+                    progressFill.style.width = pct + '%';
+                    progressFill.classList.toggle('warning', STATE.timeRemaining <= 10 && STATE.timeRemaining > 0);
+                }
+
+                const btn2 = document.getElementById('recordBtn');
+                if (btn2 && btn2.disabled) {
+                    btn2.textContent = `⏳ Thinking ${formatTime(STATE.timeRemaining)}s`;
+                }
+
+                if (STATE.timeRemaining <= 0) {
+                    clearInterval(STATE.timerId);
+                    dom.phaseTimer.textContent = '00';
+                    dom.phaseTimer.classList.remove('warning');
+                    if (progressFill) {
+                        progressFill.style.width = '0%';
+                        progressFill.classList.remove('warning');
+                    }
+                    dom.footerStatus.textContent = 'Ready to speak';
+                    if (!STATE.isAutoRecordTriggered) {
+                        STATE.isAutoRecordTriggered = true;
+                        playBeep(800, 200, 0.5).then(() => {
+                            startAutoRecord(phaseKey);
+                        });
+                    }
+                }
+            }, 100);
+        }
+
+        function startAutoRecord(phaseKey) {
+            if (STATE.isAutoRecordTriggered && phaseKey !== 'part2_2') return;
+            STATE.isAutoRecordTriggered = true;
+
+            const data = getPhaseData(phaseKey);
+            if (!data) return;
+
+            const btn = document.getElementById('recordBtn');
+            const status = document.getElementById('recordStatus');
+            const progressFill = document.getElementById('recordProgressFill');
+
+            const total = data.speakTime || 0;
+
+            dom.actionCommand.innerHTML = `
+                <span style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    🔴 Recording started
+                    <span class="beep-flash">● BEEP</span>
+                </span>
+                <span class="sub">You have ${total}s to speak</span>
+            `;
+
+            if (btn) {
+                btn.disabled = false;
+                btn.className = 'action-btn recording';
+                btn.textContent = '🔴 Recording...';
+            }
+            if (status) {
+                status.className = 'record-status-text recording';
+                status.textContent = '🔴 Recording... Please speak';
+            }
+
+            setPhase('speak');
+            dom.phaseTimer.textContent = formatTime(total);
+            dom.phaseTimer.classList.remove('warning');
+            dom.footerStatus.textContent = `Recording ${formatTime(total)}s`;
+
+            startSpeechRecognition(phaseKey);
+
+            STATE.subPhase = 'speaking';
+            STATE.timeRemaining = total;
+            STATE.totalTime = total;
+
+            if (progressFill) {
+                progressFill.style.width = '100%';
+                progressFill.classList.remove('warning');
+            }
+
+            clearInterval(STATE.timerId);
+            STATE.timerId = setInterval(() => {
+                STATE.timeRemaining -= 0.1;
+                const display = Math.ceil(STATE.timeRemaining);
+                dom.phaseTimer.textContent = formatTime(STATE.timeRemaining);
+                dom.phaseTimer.classList.toggle('warning', display <= 10 && display > 0);
+                dom.footerStatus.textContent = `Recording ${formatTime(STATE.timeRemaining)}s`;
+
+                if (progressFill) {
+                    const pct = total > 0 ? Math.max(0, (STATE.timeRemaining / total) * 100) : 0;
+                    progressFill.style.width = pct + '%';
+                    progressFill.classList.toggle('warning', STATE.timeRemaining <= 10 && STATE.timeRemaining > 0);
+                }
+
+                if (STATE.timeRemaining <= 0) {
+                    clearInterval(STATE.timerId);
+                    dom.phaseTimer.textContent = '00';
+                    dom.phaseTimer.classList.remove('warning');
+                    if (progressFill) {
+                        progressFill.style.width = '0%';
+                        progressFill.classList.remove('warning');
+                    }
+                    stopSpeechRecognition();
+                    if (btn) {
+                        btn.className = 'action-btn done';
+                        btn.disabled = true;
+                        btn.textContent = '✅ Done';
+                    }
+                    if (status) {
+                        status.className = 'record-status-text done';
+                        status.textContent = '✅ Complete';
+                    }
+                    dom.footerStatus.textContent = '✅ Complete';
+                    dom.actionCommand.innerHTML = `
+                        ✓ Section completed
+                        <span class="sub">Click "Next" to continue</span>
+                    `;
+                    onSpeakingComplete(phaseKey);
+                }
+            }, 100);
+        }
+
+        function onSpeakingComplete(phaseKey) {
+            if (STATE.hasAutoAdvanced) return;
+            STATE.hasAutoAdvanced = true;
+            STATE.subPhase = 'done';
+
+            dom.btnNext.disabled = false;
+            dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+
+            let nextPhase = null;
+            if (phaseKey === 'part1') {
+                nextPhase = 'part2_1';
+            } else if (phaseKey === 'part2_1') {
+                nextPhase = 'part2_2';
+            } else if (phaseKey === 'part2_2') {
+                const data = EXAM_DATA.part2_2;
+                if (STATE.questionIndex < data.questions.length - 1) {
+                    STATE.questionIndex++;
+                    STATE.isAutoRecordTriggered = false;
+                    dom.btnNext.disabled = false;
+                    dom.btnNext.innerHTML = 'Next ➜ <span class="arrow">➜</span>';
+                    dom.btnNext.onclick = () => {
+                        dom.btnNext.onclick = null;
+                        dom.btnNext.disabled = true;
+                        dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+                        enterPhase('part2_2');
+                    };
+                    return;
+                } else {
+                    nextPhase = 'part3';
+                }
+            } else if (phaseKey === 'part3') {
+                nextPhase = 'part4';
+            } else if (phaseKey === 'part4') {
+                nextPhase = 'complete';
+            }
+
+            if (nextPhase === 'complete') {
+                dom.btnNext.onclick = () => {
+                    renderComplete();
+                    dom.btnNext.disabled = true;
+                };
+                dom.btnNext.innerHTML = 'View Results 🎉';
+                dom.btnNext.disabled = false;
+                return;
+            }
+
+            if (nextPhase) {
+                dom.btnNext.onclick = () => {
+                    dom.btnNext.onclick = null;
+                    dom.btnNext.disabled = true;
+                    dom.btnNext.innerHTML = 'Next <span class="arrow">➜</span>';
+                    STATE.questionIndex = 0;
+                    enterPhase(nextPhase);
+                };
+            }
+        }
+
+        // ============================================================
+        //  11. PART RENDERERS
+        // ============================================================
+
+        function renderPart1() {
+            const data = EXAM_DATA.part1;
+            const task = data.task;
+
+            dom.headerBadge.textContent = data.label;
+            dom.headerTitle.textContent = data.name;
+            dom.headerSub.textContent = data.sub;
+            dom.headerProgress.textContent = data.name;
+            dom.actionCommand.innerHTML = `
+                Plan your answers
+                <span class="sub">Use the thinking time to plan what you're going to say</span>
+            `;
+            dom.footerStatus.textContent = `Preparing ${data.prepareTime}s`;
+            updateDots(0, 1);
+
+            dom.contentArea.innerHTML = `
+                <div class="two-column">
+                    <div class="col-left">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-body">
+                            <p><strong>Task:</strong> ${task.description}</p>
+                            <p>Please speak about:</p>
+                            <ul>
+                                ${task.bullets.map(b => `<li>${b}</li>`).join('')}
+                            </ul>
+                            <div class="subnote">⏱ Prepare <strong>${data.prepareTime}s</strong> ｜ Speak <strong>${data.speakTime}s</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="chart-title">💡 Tips</div>
+                        <div class="tip-text">
+                            <p><strong>Preparation:</strong></p>
+                            <ul>
+                                <li>Structure your response</li>
+                                <li>Prepare examples</li>
+                                <li>Cover all bullet points</li>
+                            </ul>
+                            <p style="margin-top:6px;"><strong>Speaking:</strong></p>
+                            <ul>
+                                <li>Use the full time</li>
+                                <li>Stay on topic</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>⏳ Preparing...</button>
+                        <span class="record-status-text" id="recordStatus">⏳ Thinking...</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+            `;
+            startPreparation('part1');
+        }
+
+        function renderPart2_1() {
+            const data = EXAM_DATA.part2_1;
+            const task = data.task;
+
+            dom.headerBadge.textContent = data.label;
+            dom.headerTitle.textContent = data.name;
+            dom.headerSub.textContent = data.sub;
+            dom.headerProgress.textContent = data.name;
+            dom.actionCommand.innerHTML = `
+                Listen and take notes
+                <span class="sub">You will hear part of a meeting. Take notes as you listen.</span>
+            `;
+            dom.footerStatus.textContent = 'Click play';
+            updateDots(0, 1);
+
+            dom.contentArea.innerHTML = `
+                <div class="two-column">
+                    <div class="col-left">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-body">
+                            <p>${task.description}</p>
+                            <div class="tts-indicator" id="ttsIndicator">
+                                <span class="dot" id="ttsDot"></span>
+                                <span id="ttsStatusText">🎧 Click play to listen</span>
+                            </div>
+                            <div style="margin:6px 0;">
+                                <button class="action-btn secondary" id="btnPlayTTS" style="font-size:0.8rem;padding:5px 18px;">
+                                    ▶ Play Audio (90s)
+                                </button>
+                            </div>
+                            <details style="margin:4px 0;font-size:0.82rem;color:#5a6c7e;">
+                                <summary style="cursor:pointer;font-weight:600;color:#002b54;">📄 Show transcript</summary>
+                                <div style="margin-top:4px;padding:8px 12px;background:#f7fafc;border-radius:8px;line-height:1.7;font-size:0.85rem;">
+                                    ${data.audioText}
+                                </div>
+                            </details>
+                            <div class="subnote">⚡ Prepare: <strong>none</strong> (speak immediately after) ｜ Speak: <strong>${data.speakTime}s</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="chart-title">📝 Note-taking</div>
+                        <div class="tip-text">
+                            <p><strong>Listen for:</strong></p>
+                            <ul>
+                                <li>Who is speaking?</li>
+                                <li>What is the topic?</li>
+                                <li>3-4 key points</li>
+                            </ul>
+                            <p style="margin-top:8px;background:#fff8e1;padding:6px 10px;border-radius:8px;border-left:3px solid #f5a623;">
+                                💡 Summarise clearly and concisely.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>⏳ Play audio first</button>
+                        <span class="record-status-text" id="recordStatus">⏳ Please play the audio</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+            `;
+
+            setPhase('listen');
+            dom.phaseTimer.textContent = '90';
+
+            document.getElementById('btnPlayTTS').addEventListener('click', () => {
+                const btn = document.getElementById('btnPlayTTS');
+                btn.disabled = true;
+                btn.textContent = '⏳ Playing...';
+                dom.actionCommand.innerHTML = `
+                    Listening to audio
+                    <span class="sub">Please listen carefully and take notes</span>
+                `;
+                dom.footerStatus.textContent = 'Audio playing...';
+                setPhase('listen');
+                dom.phaseTimer.textContent = '90';
+
+                playTTS(data.audioText).then(async () => {
+                    btn.textContent = '✅ Played';
+                    dom.footerStatus.textContent = 'Audio complete';
+
+                    // ⭐ 4秒停顿
+                    dom.actionCommand.innerHTML = `
+                        ⏳ Preparing...
+                        <span class="sub">Please prepare your summary (4s)</span>
+                    `;
+                    dom.footerStatus.textContent = 'Preparing... 4s';
+                    await sleep(4000);
+
+                    await playBeep(800, 200, 0.5);
+                    startAutoRecord('part2_1');
+                }).catch(async () => {
+                    btn.textContent = '▶ Replay';
+                    btn.disabled = false;
+                    await playBeep(800, 200, 0.5);
+                    startAutoRecord('part2_1');
+                });
+            });
+        }
+
+        function renderPart2_2() {
+            const data = EXAM_DATA.part2_2;
+            const idx = STATE.questionIndex;
+            const total = data.questions.length;
+            const currentQ = data.questions[idx] || '';
+
+            dom.headerBadge.textContent = data.label;
+            dom.headerTitle.textContent = data.name;
+            dom.headerSub.textContent = data.sub;
+            dom.headerProgress.textContent = `Q${idx + 1}/${total}`;
+            dom.actionCommand.innerHTML = `
+                Answer the question
+                <span class="sub">Give your opinion with reasons and examples</span>
+            `;
+            dom.footerStatus.textContent = `Question ${idx + 1}/${total}`;
+            updateDots(idx, total);
+
+            dom.contentArea.innerHTML = `
+                <div class="two-column">
+                    <div class="col-left">
+                        <div class="task-title">${data.task.title}</div>
+                        <div class="task-body">
+                            <p>${data.task.description}</p>
+                            <div style="background:#f7faff;padding:12px 16px;border-radius:10px;border-left:4px solid #f5a623;margin:8px 0;">
+                                <strong>Question ${idx + 1}/${total}:</strong><br>
+                                <span style="font-size:1rem;">${currentQ}</span>
+                            </div>
+                            <div class="subnote">
+                                ⏱ Prepare: <strong>none</strong> ｜ Speak: <strong>${data.speakTime}s</strong>
+                                ${idx < total - 1 ? '<br>✅ Next question will load automatically' : '<br>✅ Final question — Part 3 is next'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="chart-title">💡 Strategy</div>
+                        <div class="tip-text">
+                            <p><strong>Tips:</strong></p>
+                            <ul>
+                                <li>State your opinion clearly</li>
+                                <li>Give reasons</li>
+                                <li>Use examples</li>
+                            </ul>
+                            <p style="margin-top:8px;background:#e8f5e9;padding:6px 10px;border-radius:8px;border-left:3px solid #1e8e3e;">
+                                ✅ Each question is marked independently.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>⏳ Preparing...</button>
+                        <span class="record-status-text" id="recordStatus">⏳ Starting soon...</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+            `;
+
+            setPhase('think');
+            dom.phaseTimer.textContent = '--';
+            dom.phaseTimer.classList.remove('warning');
+
+            setTimeout(async () => {
+                // ⭐ 4秒停顿
+                dom.actionCommand.innerHTML = `
+                    ⏳ Preparing...
+                    <span class="sub">Please prepare your answer (4s)</span>
+                `;
+                dom.footerStatus.textContent = 'Preparing... 4s';
+                await sleep(4000);
+
+                await playBeep(800, 200, 0.5);
+                startAutoRecord('part2_2');
+            }, 500);
+        }
+
+        function renderPart3() {
+            const data = EXAM_DATA.part3;
+            const task = data.task;
+            const t = task.table;
+            const sd = task.serviceDetails;
+            const fb = task.feedback;
+            const req = task.requirements;
+            const out = task.outcomes;
+
+            dom.headerBadge.textContent = data.label;
+            dom.headerTitle.textContent = data.name;
+            dom.headerSub.textContent = data.sub;
+            dom.headerProgress.textContent = data.name;
+            dom.actionCommand.innerHTML = `
+                Read and recommend
+                <span class="sub">Select the most relevant information to support your recommendation</span>
+            `;
+            dom.footerStatus.textContent = `Preparing ${data.prepareTime}s`;
+            updateDots(0, 1);
+
+            dom.contentArea.innerHTML = `
+                <div class="two-column">
+                    <div class="col-left">
+                        <div class="task-title">${task.title}</div>
+                        <div class="chat-column">
+                            <div class="chat-header">
+                                <div class="chat-avatar">S</div>
+                                <span class="chat-name">Sarah</span>
+                                <span class="chat-status">📱 Online</span>
+                            </div>
+                            ${[
+                                { time: '09:15 AM', text: 'Hi! My fashion retail brand is expanding, and I need to select a new e-commerce logistics partner.' },
+                                { time: '09:16 AM', text: 'My top priority is <span class="highlight">fast shipping speed</span> because customers complain about delays.' },
+                                { time: '09:16 AM', text: 'Also, I need a provider that offers <span class="highlight">excellent customer tracking tools</span> so buyers can see where their packages are.' },
+                                { time: '09:17 AM', text: 'Since we just secured a new investment round, we have a <span class="highlight">very flexible budget</span> and don\'t mind paying premium rates. Look at these two shipping companies and tell me what you think!' }
+                            ].map(m => `
+                                <div class="message">
+                                    <span class="time">[${m.time}]</span>
+                                    <div class="bubble">${m.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="margin-top:6px;font-size:0.82rem;color:#5a6c7e;">
+                            ⏱ Read <strong>20s</strong> ｜ Review <strong>60s</strong> ｜ Speak <strong>${data.speakTime}s</strong>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="brochure-column">
+                            <div class="brochure-title">🚚 Logistics Partner Comparison</div>
+                            <div class="brochure-sub">Comprehensive evaluation based on user feedback</div>
+
+                            <div class="section-label">📋 Service Details</div>
+                            <div class="service-grid">
+                                <div class="service-card">
+                                    <div class="name">SwiftDelivery</div>
+                                    ${sd.swift.map(f => `<div class="feature"><span class="icon">${f.split(' ')[0]}</span> ${f.substring(f.indexOf(' ') + 1)}</div>`).join('')}
+                                </div>
+                                <div class="service-card">
+                                    <div class="name">EcoFreight</div>
+                                    ${sd.eco.map(f => `<div class="feature"><span class="icon">${f.split(' ')[0]}</span> ${f.substring(f.indexOf(' ') + 1)}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="section-label">📊 Evaluation Matrix</div>
+                            <table class="eval-table">
+                                <thead><tr><th style="width:28%;">Criteria</th><th style="width:36%;">SwiftDelivery</th><th style="width:36%;">EcoFreight</th></tr></thead>
+                                <tbody>
+                                    ${t.rows.map(row => `
+                                        <tr>
+                                            <td class="dimension">${row[0]}</td>
+                                            <td>${row[1].includes('Premium') ?
+                                                `<span class="stars">${row[1].split(' ')[0]}</span> <span class="score">${row[1].match(/[\d.]+/)?.[0] || ''}</span> <span class="tag premium">Premium</span>` :
+                                                `<span class="stars">${row[1].split(' ')[0]}</span> <span class="score">${row[1].match(/[\d.]+/)?.[0] || ''}</span>`
+                                            }</td>
+                                            <td>${row[2].includes('Low Cost') ?
+                                                `<span class="stars">${row[2].split(' ')[0]}</span> <span class="score">${row[2].match(/[\d.]+/)?.[0] || ''}</span> <span class="tag lowcost">Low Cost</span>` :
+                                                `<span class="stars">${row[2].split(' ')[0]}</span> <span class="score">${row[2].match(/[\d.]+/)?.[0] || ''}</span>`
+                                            }</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+
+                            <div class="section-label">📊 Feedback Distribution</div>
+                            <div class="feedback-section">
+                                <table class="feedback-table">
+                                    ${fb.rows.map(r => `
+                                        <tr>
+                                            <td style="width:20%;" class="flabel">${r[0]}</td>
+                                            <td style="width:54%;">
+                                                <div class="bar-wrap">
+                                                    <div class="bar"><div class="fill green" style="width:${r[1]}%;"></div></div>
+                                                    <div class="bar"><div class="fill yellow" style="width:${r[2]}%;"></div></div>
+                                                    <div class="bar"><div class="fill red" style="width:${r[3]}%;"></div></div>
+                                                </div>
+                                            </td>
+                                            <td style="width:26%;">
+                                                <span class="pct green">${r[1]}%</span>
+                                                <span class="pct yellow">${r[2]}%</span>
+                                                <span class="pct red">${r[3]}%</span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </table>
+                            </div>
+
+                            <div class="section-label">📋 Joining Requirements</div>
+                            <div class="requirements-list">
+                                ${req.map(r => `<div class="item"><span class="icon">✅</span> ${r}</div>`).join('')}
+                            </div>
+
+                            <div class="section-label">📈 Client Outcomes</div>
+                            <div class="outcome-grid">
+                                ${out.map(o => `
+                                    <div class="outcome-item">
+                                        <div class="oicon">${o.icon}</div>
+                                        <div class="ovalue">${o.value}</div>
+                                        <div class="odesc">${o.desc}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>⏳ Preparing...</button>
+                        <span class="record-status-text" id="recordStatus">⏳ Thinking...</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+            `;
+
+            startPreparation('part3');
+        }
+
+        function renderPart4() {
+            const data = EXAM_DATA.part4;
+            const task = data.task;
+
+            dom.headerBadge.textContent = data.label;
+            dom.headerTitle.textContent = data.name;
+            dom.headerSub.textContent = data.sub;
+            dom.headerProgress.textContent = data.name;
+            dom.actionCommand.innerHTML = `
+                Prepare your arguments
+                <span class="sub">Consider both sides and reach a conclusion</span>
+            `;
+            dom.footerStatus.textContent = `Preparing ${data.prepareTime}s`;
+            updateDots(0, 1);
+
+            dom.contentArea.innerHTML = `
+                <div class="two-column">
+                    <div class="col-left">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-body">
+                            <div style="background:#f0f6fe;padding:12px 16px;border-radius:10px;border-left:4px solid #002b54;margin-bottom:8px;">
+                                <strong>Statement:</strong><br>
+                                "${task.statement}"
+                            </div>
+                            <p>${task.description}</p>
+                            <div class="subnote">⏱ Prepare <strong>${data.prepareTime}s</strong> ｜ Speak <strong>${data.speakTime}s</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="chart-title">📋 Argument Structure</div>
+                        <div class="tip-text">
+                            <div style="background:#e8f5e9;padding:8px 12px;border-radius:8px;margin-bottom:6px;border-left:3px solid #2e7d32;">
+                                <strong>✅ For</strong>
+                                <ul style="margin-top:2px;">${task.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                            <div style="background:#ffebee;padding:8px 12px;border-radius:8px;margin-bottom:6px;border-left:3px solid #c62828;">
+                                <strong>❌ Against</strong>
+                                <ul style="margin-top:2px;">${task.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+                            </div>
+                            <div style="background:#e3ecf5;padding:8px 12px;border-radius:8px;border-left:3px solid #002b54;">
+                                <strong>🎯 Conclusion</strong>
+                                <p style="margin-top:2px;font-size:0.85rem;">State your position and give reasons for your conclusion.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-section" id="recordSection">
+                    <div class="record-row">
+                        <button class="action-btn" id="recordBtn" disabled>⏳ Preparing...</button>
+                        <span class="record-status-text" id="recordStatus">⏳ Thinking...</span>
+                    </div>
+                    <div class="record-progress" id="recordProgress">
+                        <div class="fill" id="recordProgressFill" style="width:100%;"></div>
+                    </div>
+                    <div class="speech-box" id="speechBoxContainer">
+                        <textarea placeholder="🎤 Real-time transcription will appear here..." readonly></textarea>
+                    </div>
+                </div>
+            `;
+
+            startPreparation('part4');
+        }
+
+        function renderComplete() {
+            dom.contentArea.innerHTML = `
+                <div class="complete-wrap">
+                    <div class="icon">🎉</div>
+                    <h2>Test Complete!</h2>
+                    <p>You have completed the Linguaskill Business Speaking practice test <strong>Set A</strong>.</p>
+                    <p style="font-size:0.9rem;color:#5a6c7e;">Click Close to exit or refresh to start again.</p>
+                    <button class="btn-close" onclick="location.reload()">Close</button>
+                </div>
+            `;
+            dom.headerBadge.textContent = 'Done';
+            dom.headerTitle.textContent = 'Complete';
+            dom.headerSub.textContent = '';
+            dom.headerProgress.textContent = '🎉 Finished';
+            dom.actionCommand.innerHTML = '🎉 Test complete!';
+            dom.phaseTimer.textContent = '✓';
+            dom.phaseTimer.classList.remove('warning');
+            dom.btnNext.disabled = true;
+            dom.btnNext.innerHTML = 'Complete ✓';
+            dom.footerStatus.textContent = 'Finished';
+            setPhase('idle');
+            dom.phasePointer.classList.add('hidden');
+            dom.dotIndicator.querySelectorAll('span').forEach(d => d.className = 'completed');
+        }
+
+        // ============================================================
+        //  12. TTS (Part 2.1)
+        // ============================================================
+
+        function playTTS(text) {
+            return new Promise((resolve, reject) => {
+                if (!window.speechSynthesis) {
+                    reject(new Error('TTS not supported'));
+                    return;
+                }
+                if (STATE.ttsUtterance) {
+                    window.speechSynthesis.cancel();
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85;
+                utterance.pitch = 1.0;
+                utterance.volume = 1;
+                STATE.ttsUtterance = utterance;
+                STATE.isTTSPlaying = true;
+
+                const dot = document.getElementById('ttsDot');
+                const statusText = document.getElementById('ttsStatusText');
+                if (dot) dot.classList.add('playing');
+                if (statusText) statusText.textContent = '🔊 Playing...';
+
+                utterance.onend = () => {
+                    STATE.isTTSPlaying = false;
+                    STATE.ttsUtterance = null;
+                    if (dot) dot.classList.remove('playing');
+                    if (statusText) statusText.textContent = '✅ Complete';
+                    resolve();
+                };
+                utterance.onerror = (e) => {
+                    STATE.isTTSPlaying = false;
+                    STATE.ttsUtterance = null;
+                    if (dot) dot.classList.remove('playing');
+                    if (statusText) statusText.textContent = '⚠️ Error';
+                    reject(e);
+                };
+                window.speechSynthesis.speak(utterance);
+                setTimeout(() => {
+                    if (STATE.isTTSPlaying) {
+                        window.speechSynthesis.cancel();
+                        STATE.isTTSPlaying = false;
+                        STATE.ttsUtterance = null;
+                        if (dot) dot.classList.remove('playing');
+                        if (statusText) statusText.textContent = '⏱ Timeout';
+                        resolve();
+                    }
+                }, 120000);
+            });
+        }
+
+        // ============================================================
+        //  13. SPEECH RECOGNITION
+        // ============================================================
+
+        function initSpeechRecognition() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return null;
+            const recognition = new SR();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+            try { recognition.processLocally = true; } catch (e) { /* ignore */ }
+            return recognition;
+        }
+
+        function startSpeechRecognition(phaseKey) {
+            stopSpeechRecognition();
+            if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+                showSpeechStatus('❌ Speech recognition not supported', 'idle');
+                return;
+            }
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(() => {
+                    const recognition = initSpeechRecognition();
+                    if (!recognition) {
+                        showSpeechStatus('❌ Init failed', 'idle');
+                        return;
+                    }
+                    STATE.recognition = recognition;
+                    let finalTranscript = '';
+                    const textarea = document.querySelector('.speech-box textarea');
+
+                    recognition.onresult = (event) => {
+                        let interim = '';
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            const t = event.results[i][0].transcript;
+                            if (event.results[i].isFinal) {
+                                finalTranscript += t + ' ';
+                            } else {
+                                interim += t;
+                            }
+                        }
+                        if (textarea) {
+                            textarea.value = finalTranscript + (interim ? '[' + interim + ']' : '');
+                            textarea.scrollTop = textarea.scrollHeight;
+                        }
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.warn('Speech recognition error:', event.error);
+                        if (event.error === 'not-allowed') {
+                            showSpeechStatus('❌ Microphone access denied', 'idle');
+                        } else if (event.error === 'no-speech') {
+                            showSpeechStatus('🔇 No speech detected', 'idle');
+                        } else {
+                            showSpeechStatus('⚠️ Error: ' + event.error, 'idle');
+                        }
+                        if (event.error !== 'not-allowed' && STATE.subPhase === 'speaking') {
+                            setTimeout(() => {
+                                if (STATE.subPhase === 'speaking' && !STATE.isRecording) {
+                                    startSpeechRecognition(phaseKey);
+                                }
+                            }, 500);
+                        }
+                    };
+
+                    recognition.onend = () => {
+                        STATE.isRecording = false;
+                        showSpeechStatus('⏹ Stopped', 'idle');
+                        if (STATE.subPhase === 'speaking' && !STATE.hasAutoAdvanced) {
+                            setTimeout(() => {
+                                if (STATE.subPhase === 'speaking' && !STATE.isRecording) {
+                                    startSpeechRecognition(phaseKey);
+                                }
+                            }, 300);
+                        }
+                    };
+
+                    try {
+                        recognition.start();
+                        STATE.isRecording = true;
+                        showSpeechStatus('🔴 Recording... Please speak', 'recording');
+                    } catch (e) {
+                        showSpeechStatus('⚠️ Start failed: ' + e.message, 'idle');
+                    }
+                })
+                .catch(() => {
+                    showSpeechStatus('❌ Cannot access microphone', 'idle');
+                });
+        }
+
+        function stopSpeechRecognition() {
+            if (STATE.recognition) {
+                try { STATE.recognition.stop(); } catch (e) { /* ignore */ }
+                STATE.recognition = null;
+            }
+            STATE.isRecording = false;
+            showSpeechStatus('⏹ Stopped', 'idle');
+        }
+
+        function showSpeechStatus(text, type) {
+            const statusEl = document.getElementById('recordStatus');
+            if (statusEl) {
+                statusEl.textContent = text;
+                statusEl.className = 'record-status-text ' + (type || 'idle');
+            }
+            const speechStatus = document.getElementById('speechStatus');
+            if (speechStatus) {
+                speechStatus.textContent = text;
+                speechStatus.className = 'record-status-text ' + (type || 'idle');
+            }
+        }
+
+        // ============================================================
+        //  14. STOP ALL
+        // ============================================================
+
+        function stopAll() {
+            clearInterval(STATE.timerId);
+            STATE.timerId = null;
+            stopSpeechRecognition();
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            STATE.isTTSPlaying = false;
+            STATE.isWarmupTTSPlaying = false;
+            STATE.ttsUtterance = null;
+            dom.phaseTimer.classList.remove('warning');
+        }
+
+        // ============================================================
+        //  15. INIT
+        // ============================================================
+
+        function init() {
+            if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+                const note = document.createElement('div');
+                note.style.cssText =
+                    'background:#fff3e0;padding:10px 16px;border-radius:10px;margin-top:12px;color:#a8670e;font-size:0.85rem;border:1px solid #f7e3b6;text-align:center;';
+                note.textContent = '💡 Speech recognition is not supported in this browser. Please use Chrome or Edge for full functionality.';
+                document.querySelector('.content-area').appendChild(note);
+            }
+            enterPhase('start');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('beforeunload', stopAll);
+    </script>
+
+</body>
+</html>
