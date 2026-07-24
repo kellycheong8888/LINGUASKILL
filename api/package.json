@@ -1,0 +1,8 @@
+{
+  "name": "linguaskill-tts-api",
+  "version": "1.0.0",
+  "main": "tts.js",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
