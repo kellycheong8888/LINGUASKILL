@@ -5,60 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>影子跟读 · Linguaskill Business</title>
     <style>
+        /* ===== 全局重置 & 暖阳主题 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #fbf8f0; color: #3d3d3d; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px 14px 60px; display: flex; flex-direction: column; align-items: center; }
-        .app-container { max-width: 820px; width: 100%; }
-        .app-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #e8e0d8; }
+        .app-container { max-width: 860px; width: 100%; }
+        .app-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e8e0d8; }
         .app-header h1 { font-weight: 600; font-size: 1.5rem; color: #5b8c5a; letter-spacing: 0.5px; }
         .app-header h1 span { color: #d4a373; }
         .version-badge { font-size: 0.7rem; background: #e8e0d8; padding: 3px 14px; border-radius: 30px; color: #8a7a6a; cursor: default; user-select: none; }
         .version-badge:active { transform: scale(0.95); }
-        .browser-warning { background: #f5ede4; color: #8a6a4a; padding: 10px 16px; border-radius: 12px; font-weight: 500; margin-bottom: 16px; display: none; align-items: center; gap: 8px; font-size: 0.9rem; border-left: 4px solid #d4a373; }
+        .browser-warning { background: #f5ede4; color: #8a6a4a; padding: 10px 16px; border-radius: 12px; font-weight: 500; margin-bottom: 14px; display: none; align-items: center; gap: 8px; font-size: 0.9rem; border-left: 4px solid #d4a373; }
         .browser-warning.show { display: flex; }
-        .control-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 20px; background: #ffffff; padding: 12px 18px; border-radius: 16px; box-shadow: 0 4px 20px rgba(160,120,80,0.08); border: 1px solid #ece5dd; }
-        .control-bar select { background: #f5f0eb; color: #3d3d3d; border: 1px solid #d5cdc5; padding: 7px 14px; border-radius: 30px; font-size: 0.9rem; outline: none; cursor: pointer; font-weight: 500; }
+
+        /* ===== 控制栏 ===== */
+        .control-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 16px; background: #ffffff; padding: 12px 16px; border-radius: 16px; box-shadow: 0 4px 20px rgba(160,120,80,0.08); border: 1px solid #ece5dd; }
+        .control-bar select { background: #f5f0eb; color: #3d3d3d; border: 1px solid #d5cdc5; padding: 5px 12px; border-radius: 30px; font-size: 0.85rem; outline: none; cursor: pointer; font-weight: 500; }
         .control-bar select:focus { border-color: #5b8c5a; box-shadow: 0 0 0 3px rgba(91,140,90,0.15); }
-        #passageSelect { min-width: 150px; }
-        #voiceSelect { min-width: 140px; }
-        .progress-text { font-size: 0.9rem; background: #f5f0eb; padding: 4px 16px; border-radius: 30px; border: 1px solid #d5cdc5; white-space: nowrap; font-weight: 500; color: #6a5a4a; }
-        .action-btn { background: #5b8c5a; border: none; color: #ffffff; font-weight: 600; padding: 7px 24px; border-radius: 40px; font-size: 0.95rem; cursor: pointer; transition: 0.25s; margin-left: auto; letter-spacing: 0.3px; box-shadow: 0 4px 14px rgba(91,140,90,0.3); }
-        .action-btn:disabled { opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+        #passageSelect { min-width: 130px; }
+        #voiceSelect { min-width: 120px; }
+
+        .speed-group { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+        .speed-group label { font-size: 0.8rem; color: #6a5a4a; font-weight: 600; }
+        .speed-group input[type="range"] { width: 80px; accent-color: #5b8c5a; cursor: pointer; }
+        .speed-group .speed-val { font-size: 0.8rem; font-weight: 700; color: #5b8c5a; min-width: 36px; text-align: center; }
+        .speed-btn { background: #f5f0eb; border: 1px solid #d5cdc5; border-radius: 30px; padding: 2px 10px; font-size: 0.7rem; font-weight: 600; color: #3d3d3d; cursor: pointer; transition: 0.15s; }
+        .speed-btn:hover { background: #ece5dd; }
+        .speed-btn.active-speed { background: #5b8c5a; color: #fff; border-color: #5b8c5a; }
+
+        .action-btn { background: #5b8c5a; border: none; color: #fff; font-weight: 600; padding: 5px 16px; border-radius: 40px; font-size: 0.85rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 14px rgba(91,140,90,0.25); }
+        .action-btn:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
         .action-btn:active:not(:disabled) { transform: scale(0.95); }
         .action-btn.secondary { background: #d4a373; box-shadow: 0 4px 14px rgba(212,163,115,0.3); }
-        .sentences-list { display: flex; flex-direction: column; gap: 16px; margin: 16px 0 24px; }
-        .sentence-card { background: #ffffff; border-radius: 18px; padding: 16px 20px; border-left: 6px solid #d5cdc5; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(160,120,80,0.06); border: 1px solid #ece5dd; }
+        .action-btn.outline { background: transparent; color: #5b8c5a; border: 2px solid #5b8c5a; box-shadow: none; }
+        .action-btn.outline:hover { background: #f0f7ef; }
+        .action-btn.danger { background: #c0392b; box-shadow: 0 4px 14px rgba(192,57,43,0.3); }
+        .action-btn.danger:hover { background: #a93226; }
+        .action-btn.recording-pulse { animation: pulse-rec 0.8s infinite; }
+        @keyframes pulse-rec { 0% { box-shadow: 0 0 0 0 rgba(192,57,43,0.4); } 100% { box-shadow: 0 0 0 12px rgba(192,57,43,0); } }
+
+        .progress-text { font-size: 0.85rem; background: #f5f0eb; padding: 3px 14px; border-radius: 30px; border: 1px solid #d5cdc5; white-space: nowrap; font-weight: 500; color: #6a5a4a; }
+
+        /* ===== 句子列表 ===== */
+        .sentences-list { display: flex; flex-direction: column; gap: 14px; margin: 16px 0 24px; }
+        .sentence-card { background: #ffffff; border-radius: 18px; padding: 14px 18px; border-left: 6px solid #d5cdc5; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(160,120,80,0.06); border: 1px solid #ece5dd; }
         .sentence-card.active-tts { border-left-color: #d4a373; box-shadow: 0 0 0 4px rgba(212,163,115,0.15), 0 4px 24px rgba(160,120,80,0.1); animation: breathe-glow-light 1.6s infinite; }
         @keyframes breathe-glow-light { 0% { box-shadow: 0 0 0 4px rgba(212,163,115,0.1), 0 2px 12px rgba(0,0,0,0.04); } 50% { box-shadow: 0 0 0 8px rgba(212,163,115,0.2), 0 4px 24px rgba(212,163,115,0.12); } 100% { box-shadow: 0 0 0 4px rgba(212,163,115,0.1), 0 2px 12px rgba(0,0,0,0.04); } }
         .sentence-card.recording { border-left-color: #c0392b; box-shadow: 0 0 0 4px rgba(192,57,43,0.12), 0 4px 20px rgba(192,57,43,0.08); animation: pulse-rec-light 0.9s infinite; }
         @keyframes pulse-rec-light { 0% { box-shadow: 0 0 0 4px rgba(192,57,43,0.1); } 50% { box-shadow: 0 0 0 10px rgba(192,57,43,0.18); } 100% { box-shadow: 0 0 0 4px rgba(192,57,43,0.1); } }
         .sentence-card.completed { border-left-color: #7aa87a; }
+        .sentence-card.full-play-highlight { background: #f5f7fa; border-left-color: #4a90d9; }
+
         .sentence-text { font-size: 17px; line-height: 1.7; color: #3d3d3d; cursor: pointer; padding: 4px 0; border-radius: 4px; transition: 0.2s; user-select: none; }
         .sentence-text.hidden { background: #e8e0d8; color: transparent; border-radius: 6px; padding: 4px 10px; min-height: 1.7em; cursor: pointer; }
         .sentence-text.hidden::before { content: "👆 点击显示英文"; color: #8a7a6a; font-size: 14px; }
-        .translation-area { margin-top: 6px; font-size: 15px; color: #6a5a4a; padding: 6px 12px; background: #f5f0eb; border-radius: 10px; cursor: pointer; transition: 0.25s; min-height: 2.2em; display: flex; align-items: center; user-select: none; }
+
+        .translation-area { margin-top: 4px; font-size: 15px; color: #6a5a4a; padding: 4px 12px; background: #f5f0eb; border-radius: 10px; cursor: pointer; transition: 0.25s; min-height: 2em; display: flex; align-items: center; user-select: none; }
         .translation-area.hidden { background: #e8e0d8; color: transparent; }
         .translation-area.hidden::before { content: "👆 点击显示翻译"; color: #8a7a6a; font-size: 14px; }
         .translation-area .zh-text { color: #3d3d3d; }
         .translation-area.hidden .zh-text { display: none; }
-        .card-status { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.8rem; color: #8a7a6a; flex-wrap: wrap; gap: 4px; }
-        .accuracy-badge { color: #5b8c5a; font-weight: 600; background: #f0f7ef; padding: 2px 14px; border-radius: 30px; font-size: 0.8rem; }
-        .comparison-result { margin-top: 10px; background: #f5f0eb; padding: 10px 14px; border-radius: 12px; font-size: 0.92rem; display: none; flex-wrap: wrap; gap: 4px 6px; border-left: 4px solid #d4a373; }
+
+        .card-status { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.78rem; color: #8a7a6a; flex-wrap: wrap; gap: 4px; }
+        .accuracy-badge { color: #5b8c5a; font-weight: 600; background: #f0f7ef; padding: 2px 14px; border-radius: 30px; font-size: 0.78rem; }
+
+        .comparison-result { margin-top: 8px; background: #f5f0eb; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; display: none; flex-wrap: wrap; gap: 3px 5px; border-left: 4px solid #d4a373; }
         .comparison-result.show { display: flex; }
         .word-match { color: #5b8c5a; font-weight: 500; }
         .word-mismatch { color: #c0392b; background: #fdedec; padding: 0 6px; border-radius: 4px; position: relative; font-weight: 500; }
-        .word-mismatch::after { content: attr(data-correct); position: absolute; bottom: -1.4em; left: 0; font-size: 0.7rem; color: #a93226; background: #fff; padding: 0 8px; border-radius: 6px; white-space: nowrap; display: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .word-mismatch::after { content: attr(data-correct); position: absolute; bottom: -1.4em; left: 0; font-size: 0.65rem; color: #a93226; background: #fff; padding: 0 8px; border-radius: 6px; white-space: nowrap; display: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .word-mismatch:hover::after { display: block; }
-        .manual-input-area { margin-top: 10px; display: none; gap: 8px; flex-wrap: wrap; }
+
+        .manual-input-area { margin-top: 8px; display: none; gap: 6px; flex-wrap: wrap; }
         .manual-input-area.show { display: flex; }
-        .manual-input-area input { flex: 1; min-width: 150px; padding: 8px 14px; border: 2px solid #d5cdc5; border-radius: 30px; font-size: 0.9rem; background: #ffffff; outline: none; transition: 0.2s; }
+        .manual-input-area input { flex: 1; min-width: 120px; padding: 6px 12px; border: 2px solid #d5cdc5; border-radius: 30px; font-size: 0.85rem; background: #ffffff; outline: none; transition: 0.2s; }
         .manual-input-area input:focus { border-color: #5b8c5a; box-shadow: 0 0 0 3px rgba(91,140,90,0.12); }
-        .manual-input-area .mini-btn { background: #5b8c5a; color: #fff; border: none; padding: 6px 20px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .manual-input-area .mini-btn { background: #5b8c5a; color: #fff; border: none; padding: 4px 16px; border-radius: 30px; font-size: 0.8rem; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .manual-input-area .mini-btn:hover { background: #4a7a49; }
-        .waveform-wrapper { background: #f5f0eb; border-radius: 14px; padding: 4px 0; margin: 6px 0 2px; height: 48px; display: none; align-items: center; justify-content: center; }
+
+        .waveform-wrapper { background: #f5f0eb; border-radius: 14px; padding: 4px 0; margin: 6px 0 2px; height: 44px; display: none; align-items: center; justify-content: center; }
         .waveform-wrapper.active { display: flex; }
-        .waveform-wrapper canvas { width: 100%; height: 40px; border-radius: 10px; background: #f5f0eb; }
-        .sentence-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #ece5dd; }
-        .sentence-actions .mini-btn { background: #f5f0eb; border: 1px solid #d5cdc5; color: #3d3d3d; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; cursor: pointer; transition: 0.2s; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+        .waveform-wrapper canvas { width: 100%; height: 36px; border-radius: 10px; background: #f5f0eb; }
+
+        .sentence-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #ece5dd; }
+        .sentence-actions .mini-btn { background: #f5f0eb; border: 1px solid #d5cdc5; color: #3d3d3d; padding: 3px 12px; border-radius: 30px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
         .sentence-actions .mini-btn:hover { background: #ece5dd; }
         .sentence-actions .mini-btn.active { background: #c0392b; color: #fff; border-color: #c0392b; animation: pulse-rec-light 0.9s infinite; }
         .sentence-actions .mini-btn.primary { background: #5b8c5a; color: #fff; border-color: #5b8c5a; }
@@ -66,40 +95,90 @@
         .sentence-actions .mini-btn.success { background: #7aa87a; color: #fff; border-color: #7aa87a; }
         .sentence-actions .mini-btn.success:hover { background: #6a9a6a; }
         .sentence-actions .mini-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .report-area { background: #ffffff; border-radius: 20px; padding: 22px; margin-top: 24px; display: none; border: 1px solid #ece5dd; box-shadow: 0 4px 24px rgba(160,120,80,0.06); }
+
+        /* ===== 报告 & 历史 ===== */
+        .report-area { background: #ffffff; border-radius: 20px; padding: 20px; margin-top: 24px; display: none; border: 1px solid #ece5dd; box-shadow: 0 4px 24px rgba(160,120,80,0.06); }
         .report-area.show { display: block; }
-        .report-area h3 { color: #5b8c5a; margin-bottom: 14px; font-weight: 600; font-size: 1.2rem; }
-        .report-stats { display: flex; flex-wrap: wrap; gap: 20px 32px; background: #f5f0eb; padding: 14px 20px; border-radius: 16px; }
-        .report-stats div { font-size: 0.92rem; }
+        .report-area h3 { color: #5b8c5a; margin-bottom: 12px; font-weight: 600; font-size: 1.2rem; }
+        .report-stats { display: flex; flex-wrap: wrap; gap: 16px 28px; background: #f5f0eb; padding: 12px 18px; border-radius: 16px; }
+        .report-stats div { font-size: 0.9rem; }
         .report-stats strong { color: #5b8c5a; }
-        .report-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .report-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
         .report-actions .action-btn { margin-left: 0; }
         .history-area { margin-top: 24px; background: #ffffff; border-radius: 16px; padding: 14px 18px; font-size: 0.85rem; border: 1px solid #ece5dd; }
         .history-area h4 { color: #8a7a6a; font-weight: 500; margin-bottom: 8px; }
-        .history-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0ebe5; color: #4a4a4a; }
-        @media (max-width: 640px) { .control-bar { flex-direction: column; align-items: stretch; } .action-btn { margin-left: 0; text-align: center; } .sentence-actions { gap: 5px; } .sentence-actions .mini-btn { font-size: 0.72rem; padding: 4px 10px; } .sentence-text { font-size: 15px; } .app-header h1 { font-size: 1.2rem; } }
-        @media (max-width: 420px) { .sentence-actions .mini-btn { font-size: 0.65rem; padding: 3px 8px; } .sentence-card { padding: 12px 14px; } }
+        .history-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0ebe5; color: #4a4a4a; font-size: 0.8rem; flex-wrap: wrap; gap: 4px; }
+
+        @media (max-width: 640px) {
+            .control-bar { flex-direction: column; align-items: stretch; gap: 6px; }
+            .control-bar select { width: 100%; }
+            .speed-group { justify-content: center; }
+            .action-btn { text-align: center; }
+            .sentence-actions { gap: 4px; }
+            .sentence-actions .mini-btn { font-size: 0.7rem; padding: 3px 8px; }
+            .sentence-text { font-size: 15px; }
+            .app-header h1 { font-size: 1.2rem; }
+        }
+        @media (max-width: 420px) {
+            .sentence-actions .mini-btn { font-size: 0.65rem; padding: 2px 6px; }
+            .sentence-card { padding: 10px 12px; }
+        }
     </style>
 </head>
 <body>
 <div class="app-container" id="app">
+    <!-- 头部 -->
     <div class="app-header">
         <h1>Linguaskill · <span>Business</span></h1>
-        <span class="version-badge" id="versionBadge" title="双击清空所有数据">v2.1.0</span>
+        <span class="version-badge" id="versionBadge" title="双击清空所有数据">v2.2.0</span>
     </div>
     <div class="browser-warning" id="browserWarning">⚠️ 当前浏览器不支持语音识别，请使用 Chrome 或 Edge 浏览器。</div>
-    <div class="control-bar">
+
+    <!-- 控制栏 -->
+    <div class="control-bar" id="controlBar">
         <select id="passageSelect"></select>
         <select id="voiceSelect">
             <option value="en-GB-SoniaNeural">🎤 Sonia（温柔女声）</option>
             <option value="en-GB-AdaMultilingualNeural">🎤 Ada（活泼女声）</option>
             <option value="en-GB-OllieMultilingualNeural">🎤 Ollie（温暖男声）</option>
         </select>
-        <span class="progress-text" id="progressText">0 / 0</span>
+
+        <!-- 语速控制 -->
+        <div class="speed-group">
+            <label>🐢</label>
+            <input type="range" id="speedSlider" min="0.5" max="1.5" step="0.05" value="0.8">
+            <span class="speed-val" id="speedDisplay">0.80</span>
+            <label>🐇</label>
+        </div>
+        <div class="speed-group" style="gap:2px;">
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="0.7">0.7×</button>
+            <button class="speed-btn active-speed" data-speed="0.8">0.8×</button>
+            <button class="speed-btn" data-speed="1.0">1.0×</button>
+            <button class="speed-btn" data-speed="1.2">1.2×</button>
+            <button class="speed-btn" data-speed="1.5">1.5×</button>
+        </div>
+
+        <!-- 全文播放控制 -->
+        <button class="action-btn" id="fullPlayBtn">▶ 播放全文</button>
+        <button class="action-btn secondary" id="fullPauseBtn" disabled>⏸ 暂停</button>
+
+        <!-- 全文录音控制 -->
+        <button class="action-btn secondary" id="fullRecordBtn">🎙 录音全文</button>
+        <button class="action-btn danger" id="fullStopRecordBtn" style="display:none;">⏹ 停止录音</button>
+        <button class="action-btn outline" id="fullPlaybackBtn" disabled>🔁 回放全文</button>
+
+        <!-- 训练控制 -->
         <button class="action-btn" id="mainActionBtn">▶ 开始训练</button>
-        <button class="action-btn secondary" id="stopRecordingBtn" style="display:none;">⏹ 停止录音</button>
+        <button class="action-btn danger" id="stopRecordingBtn" style="display:none;">⏹ 停止录音</button>
+
+        <span class="progress-text" id="progressText">0 / 0</span>
     </div>
+
+    <!-- 句子列表 -->
     <div id="sentencesContainer" class="sentences-list"></div>
+
+    <!-- 报告 -->
     <div class="report-area" id="reportArea">
         <h3>📊 训练报告</h3>
         <div class="report-stats" id="reportStats"></div>
@@ -110,6 +189,8 @@
             <button class="action-btn secondary" id="exportReportBtn" style="background:#d4a373; box-shadow:0 4px 14px rgba(212,163,115,0.3);">📄 导出报告</button>
         </div>
     </div>
+
+    <!-- 历史 -->
     <div class="history-area" id="historyArea">
         <h4>📋 最近训练记录</h4>
         <div id="historyList"></div>
@@ -140,7 +221,7 @@
     }
 
     // ================================================================
-    // 3. 范文数据（完整版 43 篇）
+    // 3. 范文数据（完整版 41 篇）
     // ================================================================
     const passages = [
         // ---- 原有范文：投诉处理 ----
@@ -795,6 +876,21 @@
     let cachedStream = null;
     let currentRecordingBlob = null;
 
+    // ---- 全文播放状态 ----
+    let fullPlayActive = false;
+    let fullPlayPaused = false;
+    let fullPlayCurrentIndex = 0;
+    let fullPlayTimeoutId = null;
+    let fullPlayCancelled = false;
+    let fullPlaySpeed = 0.8;
+
+    // ---- 全文录音状态 ----
+    let fullRecorder = null;
+    let fullAudioChunks = [];
+    let isFullRecording = false;
+    let fullRecordBlob = null;
+
+    // DOM refs
     const passageSelect = document.getElementById('passageSelect');
     const progressText = document.getElementById('progressText');
     const mainBtn = document.getElementById('mainActionBtn');
@@ -807,6 +903,15 @@
     const historyList = document.getElementById('historyList');
     const browserWarning = document.getElementById('browserWarning');
     const versionBadge = document.getElementById('versionBadge');
+
+    // 全文控制
+    const fullPlayBtn = document.getElementById('fullPlayBtn');
+    const fullPauseBtn = document.getElementById('fullPauseBtn');
+    const fullRecordBtn = document.getElementById('fullRecordBtn');
+    const fullStopRecordBtn = document.getElementById('fullStopRecordBtn');
+    const fullPlaybackBtn = document.getElementById('fullPlaybackBtn');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedDisplay = document.getElementById('speedDisplay');
 
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const hasRecognition = !!SR;
@@ -825,6 +930,8 @@
         updateProgress();
         updateHistory();
         checkUnfinished();
+        initSpeedControls();
+        updateFullPlaybackBtn();
     }
 
     function populatePassageSelect() {
@@ -911,7 +1018,331 @@
     }
 
     // ================================================================
-    // 6. 渲染句子
+    // 6. 语速控制
+    // ================================================================
+    function initSpeedControls() {
+        speedSlider.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            speedDisplay.textContent = val.toFixed(2);
+            fullPlaySpeed = val;
+            document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active-speed'));
+            const presets = [0.5, 0.7, 0.8, 1.0, 1.2, 1.5];
+            let closest = null;
+            let closestDiff = Infinity;
+            presets.forEach(p => {
+                const diff = Math.abs(p - val);
+                if (diff < closestDiff) { closestDiff = diff; closest = p; }
+            });
+            if (closestDiff < 0.02) {
+                document.querySelector(`.speed-btn[data-speed="${closest}"]`)?.classList.add('active-speed');
+            }
+        });
+
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const val = parseFloat(this.dataset.speed);
+                speedSlider.value = val;
+                speedDisplay.textContent = val.toFixed(2);
+                fullPlaySpeed = val;
+                document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active-speed'));
+                this.classList.add('active-speed');
+            });
+        });
+    }
+
+    function getCurrentSpeed() {
+        return fullPlaySpeed;
+    }
+
+    // ================================================================
+    // 7. 全文播放
+    // ================================================================
+    function getEnglishSentences() {
+        const sentences = passages[currentPassageIndex]?.sentences || [];
+        return sentences.filter(s => s.en && s.en.trim().length > 0);
+    }
+
+    function clearFullPlayHighlights() {
+        document.querySelectorAll('.sentence-card.full-play-highlight').forEach(el => {
+            el.classList.remove('full-play-highlight');
+        });
+    }
+
+    function highlightFullPlaySentence(index) {
+        clearFullPlayHighlights();
+        const cards = document.querySelectorAll('.sentence-card');
+        if (cards[index]) {
+            cards[index].classList.add('full-play-highlight');
+            cards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function stopFullPlay() {
+        fullPlayCancelled = true;
+        fullPlayActive = false;
+        fullPlayPaused = false;
+        if (fullPlayTimeoutId) {
+            clearTimeout(fullPlayTimeoutId);
+            fullPlayTimeoutId = null;
+        }
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+        }
+        clearFullPlayHighlights();
+        updateFullPlayButtons();
+    }
+
+    function pauseFullPlay() {
+        if (fullPlayActive && !fullPlayPaused) {
+            fullPlayPaused = true;
+            fullPlayActive = false;
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            if (fullPlayTimeoutId) {
+                clearTimeout(fullPlayTimeoutId);
+                fullPlayTimeoutId = null;
+            }
+            updateFullPlayButtons();
+        }
+    }
+
+    function resumeFullPlay() {
+        if (fullPlayPaused) {
+            fullPlayPaused = false;
+            fullPlayActive = true;
+            fullPlayCancelled = false;
+            updateFullPlayButtons();
+            speakFullSentence(fullPlayCurrentIndex);
+        }
+    }
+
+    function startFullPlay() {
+        if (fullPlayActive && !fullPlayPaused) return;
+        if (fullPlayPaused) {
+            resumeFullPlay();
+            return;
+        }
+        const sentences = getEnglishSentences();
+        if (sentences.length === 0) {
+            alert('当前范文没有英文句子');
+            return;
+        }
+        stopFullPlay();
+        fullPlayActive = true;
+        fullPlayPaused = false;
+        fullPlayCancelled = false;
+        fullPlayCurrentIndex = 0;
+        updateFullPlayButtons();
+        speakFullSentence(0);
+    }
+
+    function speakFullSentence(index) {
+        if (fullPlayCancelled || !fullPlayActive) {
+            fullPlayActive = false;
+            updateFullPlayButtons();
+            return;
+        }
+        const sentences = getEnglishSentences();
+        if (index >= sentences.length) {
+            fullPlayActive = false;
+            fullPlayPaused = false;
+            clearFullPlayHighlights();
+            updateFullPlayButtons();
+            showToast('✅ 全文播放完成！');
+            return;
+        }
+        fullPlayCurrentIndex = index;
+        const text = sentences[index].en;
+        highlightFullPlaySentence(index);
+
+        // 使用 Azure TTS 播放
+        const voiceSelect = document.getElementById('voiceSelect');
+        const voiceName = voiceSelect ? voiceSelect.value : 'en-GB-SoniaNeural';
+        const rate = getCurrentSpeed();
+
+        fetch(PROXY_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-proxy-secret': PROXY_SECRET },
+            body: JSON.stringify({ action: 'tts', text: text, voice: voiceName, rate: rate })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('API 请求失败');
+            return res.json();
+        })
+        .then(data => {
+            if (!data.success || !data.audio) throw new Error('音频数据错误');
+            const audioBlob = base64ToBlob(data.audio, 'audio/mp3');
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+            audio.onended = () => {
+                URL.revokeObjectURL(audioUrl);
+                if (fullPlayActive && !fullPlayPaused && !fullPlayCancelled) {
+                    fullPlayTimeoutId = setTimeout(() => {
+                        speakFullSentence(index + 1);
+                    }, 400);
+                }
+            };
+            audio.onerror = () => {
+                URL.revokeObjectURL(audioUrl);
+                // 降级到浏览器 TTS
+                fallbackFullPlayTTS(text, index);
+            };
+        })
+        .catch(err => {
+            console.warn('Azure TTS 失败，降级:', err);
+            fallbackFullPlayTTS(text, index);
+        });
+    }
+
+    function fallbackFullPlayTTS(text, index) {
+        if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-GB';
+        utterance.rate = getCurrentSpeed();
+        utterance.pitch = 1.0;
+        utterance.onend = () => {
+            if (fullPlayActive && !fullPlayPaused && !fullPlayCancelled) {
+                fullPlayTimeoutId = setTimeout(() => {
+                    speakFullSentence(index + 1);
+                }, 400);
+            }
+        };
+        utterance.onerror = () => {
+            if (fullPlayActive && !fullPlayPaused && !fullPlayCancelled) {
+                fullPlayTimeoutId = setTimeout(() => {
+                    speakFullSentence(index + 1);
+                }, 400);
+            }
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function updateFullPlayButtons() {
+        if (fullPlayActive && !fullPlayPaused) {
+            fullPlayBtn.textContent = '🔊 播放中...';
+            fullPlayBtn.disabled = true;
+            fullPauseBtn.textContent = '⏸ 暂停';
+            fullPauseBtn.disabled = false;
+        } else if (fullPlayPaused) {
+            fullPlayBtn.textContent = '▶ 继续';
+            fullPlayBtn.disabled = false;
+            fullPauseBtn.textContent = '⏸ 暂停';
+            fullPauseBtn.disabled = true;
+        } else {
+            fullPlayBtn.textContent = '▶ 播放全文';
+            fullPlayBtn.disabled = false;
+            fullPauseBtn.textContent = '⏸ 暂停';
+            fullPauseBtn.disabled = true;
+        }
+    }
+
+    // ================================================================
+    // 8. 全文录音
+    // ================================================================
+    function startFullRecording() {
+        if (!navigator.mediaDevices) {
+            alert('浏览器不支持麦克风');
+            return;
+        }
+        if (isFullRecording) return;
+
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                isFullRecording = true;
+                fullAudioChunks = [];
+                fullRecordBlob = null;
+                fullRecorder = new MediaRecorder(stream);
+                fullRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) fullAudioChunks.push(e.data);
+                };
+                fullRecorder.onstop = () => {
+                    const blob = new Blob(fullAudioChunks, { type: 'audio/webm' });
+                    if (blob.size > 2000) {
+                        fullRecordBlob = blob;
+                        const key = `full_recording_${currentPassageIndex}`;
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            try {
+                                localStorage.setItem(key, e.target.result.split(',')[1]);
+                                localStorage.setItem(key + '_type', 'audio/webm');
+                                showToast('✅ 全文录音已保存！');
+                                updateFullPlaybackBtn();
+                            } catch(err) {
+                                showToast('⚠️ 录音保存失败');
+                            }
+                        };
+                        reader.readAsDataURL(blob);
+                    } else {
+                        showToast('⚠️ 录音太短，请重新录制');
+                    }
+                    isFullRecording = false;
+                    fullRecordBtn.textContent = '🎙 录音全文';
+                    fullRecordBtn.style.display = 'inline-block';
+                    fullStopRecordBtn.style.display = 'none';
+                    fullRecordBtn.classList.remove('recording-pulse');
+                };
+                fullRecorder.start();
+                fullRecordBtn.textContent = '🔴 录音中...';
+                fullRecordBtn.style.display = 'none';
+                fullStopRecordBtn.style.display = 'inline-block';
+                fullStopRecordBtn.classList.add('recording-pulse');
+                showToast('🎙 全文录音中... 点击"停止录音"结束');
+            })
+            .catch(err => {
+                alert('麦克风授权被拒绝: ' + err.message);
+            });
+    }
+
+    function stopFullRecording() {
+        if (fullRecorder && fullRecorder.state === 'recording') {
+            fullRecorder.stop();
+            fullRecorder = null;
+        }
+        if (isFullRecording) {
+            isFullRecording = false;
+        }
+        fullRecordBtn.textContent = '🎙 录音全文';
+        fullRecordBtn.style.display = 'inline-block';
+        fullStopRecordBtn.style.display = 'none';
+        fullStopRecordBtn.classList.remove('recording-pulse');
+    }
+
+    function playFullRecording() {
+        const key = `full_recording_${currentPassageIndex}`;
+        const data = localStorage.getItem(key);
+        if (!data) {
+            showToast('⚠️ 没有全文录音');
+            return;
+        }
+        try {
+            const mimeType = localStorage.getItem(key + '_type') || 'audio/webm';
+            const blob = base64ToBlob(data, mimeType);
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+            audio.onended = () => URL.revokeObjectURL(url);
+            showToast('🔊 播放全文录音...');
+        } catch(e) {
+            showToast('⚠️ 播放失败');
+        }
+    }
+
+    function updateFullPlaybackBtn() {
+        const key = `full_recording_${currentPassageIndex}`;
+        const data = localStorage.getItem(key);
+        if (data) {
+            fullPlaybackBtn.disabled = false;
+            fullPlaybackBtn.textContent = '🔁 回放全文';
+        } else {
+            fullPlaybackBtn.disabled = true;
+            fullPlaybackBtn.textContent = '🔁 回放全文';
+        }
+    }
+
+    // ================================================================
+    // 9. 渲染句子
     // ================================================================
     function renderSentences() {
         const sentences = passages[currentPassageIndex]?.sentences || [];
@@ -1012,10 +1443,11 @@
                 setupWaveform(canvas);
             }
         }
+        updateFullPlaybackBtn();
     }
 
     // ================================================================
-    // 7. 事件绑定
+    // 10. 事件绑定
     // ================================================================
     function bindSentenceActions() {
         document.querySelectorAll('.sentence-actions').forEach(group => {
@@ -1075,7 +1507,7 @@
     }
 
     // ================================================================
-    // 8. 核心功能函数 - 播放（Azure TTS）
+    // 11. 核心功能函数 - 单句播放（Azure TTS）
     // ================================================================
     async function handlePlay(idx) {
         const sentences = passages[currentPassageIndex]?.sentences || [];
@@ -1084,7 +1516,7 @@
         const text = sentences[idx].en;
         const voiceSelect = document.getElementById('voiceSelect');
         const voiceName = voiceSelect ? voiceSelect.value : 'en-GB-SoniaNeural';
-        const rate = 0.8;
+        const rate = getCurrentSpeed();
 
         try {
             const btn = document.querySelector(`.sentence-actions button[data-action="play"][data-idx="${idx}"]`);
@@ -1133,14 +1565,11 @@
         }
     }
 
-    // ================================================================
-    // 降级方案：浏览器自带 TTS
-    // ================================================================
     function fallbackToBrowserTTS(text, idx) {
         if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-GB';
-        utterance.rate = 0.8;
+        utterance.rate = getCurrentSpeed();
         utterance.pitch = 1.0;
         window.speechSynthesis.speak(utterance);
 
@@ -1151,7 +1580,7 @@
     }
 
     // ================================================================
-    // 9. 录音、回放、评分等功能
+    // 12. 录音、回放、评分等功能
     // ================================================================
     function handleRecord(idx) {
         const state = sentenceStates[idx];
@@ -1378,7 +1807,7 @@
     }
 
     // ================================================================
-    // 10. 全局训练流程
+    // 13. 全局训练流程（保留原有功能）
     // ================================================================
     function startTraining() {
         if (trainingActive) return;
@@ -1600,7 +2029,7 @@
     }
 
     // ================================================================
-    // 11. 波形可视化
+    // 14. 波形可视化
     // ================================================================
     function setupWaveform(canvas) {
         canvasEl = canvas;
@@ -1618,7 +2047,7 @@
         if (!canvasCtx || !analyser || !dataArray || !canvasEl) return;
         const parent = canvasEl.parentElement;
         const width = parent ? parent.clientWidth : 300;
-        const height = 40;
+        const height = 36;
         canvasEl.width = width * 2;
         canvasEl.height = height * 2;
         canvasEl.style.width = width + 'px';
@@ -1654,7 +2083,7 @@
     }
 
     // ================================================================
-    // 12. 报告 & 历史
+    // 15. 报告 & 历史
     // ================================================================
     function showReport() {
         const states = sentenceStates;
@@ -1714,13 +2143,16 @@
     }
 
     // ================================================================
-    // 13. 全局事件绑定
+    // 16. 全局事件绑定
     // ================================================================
     function bindEvents() {
+        // ---- 范文切换 ----
         passageSelect.addEventListener('change', function() {
             if (trainingActive) {
                 if (!confirm('切换范文将中断当前训练，确定吗？')) return;
             }
+            stopFullPlay();
+            stopFullRecording();
             currentPassageIndex = parseInt(this.value);
             resetAllState();
             saveState();
@@ -1730,8 +2162,19 @@
             mainBtn.textContent = '▶ 开始训练';
             stopBtn.style.display = 'none';
             isTrainingComplete = false;
+            updateFullPlaybackBtn();
         });
 
+        // ---- 全文播放 ----
+        fullPlayBtn.addEventListener('click', startFullPlay);
+        fullPauseBtn.addEventListener('click', pauseFullPlay);
+
+        // ---- 全文录音 ----
+        fullRecordBtn.addEventListener('click', startFullRecording);
+        fullStopRecordBtn.addEventListener('click', stopFullRecording);
+        fullPlaybackBtn.addEventListener('click', playFullRecording);
+
+        // ---- 训练 ----
         mainBtn.addEventListener('click', function() {
             if (isTrainingComplete) {
                 if (confirm('已完成训练，是否重新开始？')) {
@@ -1755,6 +2198,7 @@
             }
         });
 
+        // ---- 报告 ----
         document.getElementById('retrainBtn').addEventListener('click', function() {
             if (confirm('重新训练将清空当前进度，确定吗？')) {
                 resetAllState();
@@ -1793,10 +2237,16 @@
             a.click();
         });
 
+        // ---- 双击版本号清空数据 ----
         versionBadge.addEventListener('dblclick', function() {
             if (confirm('⚠️ 确定清空所有本地数据？')) {
                 localStorage.removeItem(STORAGE_KEY);
                 localStorage.removeItem('shadowReadHistory_v2');
+                // 清空所有全文录音
+                for (let i = 0; i < passages.length; i++) {
+                    localStorage.removeItem(`full_recording_${i}`);
+                    localStorage.removeItem(`full_recording_${i}_type`);
+                }
                 resetAllState();
                 renderSentences();
                 updateProgress();
@@ -1804,15 +2254,43 @@
                 mainBtn.textContent = '▶ 开始训练';
                 isTrainingComplete = false;
                 updateHistory();
+                updateFullPlaybackBtn();
                 alert('已清空所有数据');
             }
         });
+    }
+
+    function stopFullRecording() {
+        if (fullRecorder && fullRecorder.state === 'recording') {
+            fullRecorder.stop();
+            fullRecorder = null;
+        }
+        isFullRecording = false;
+        fullRecordBtn.textContent = '🎙 录音全文';
+        fullRecordBtn.style.display = 'inline-block';
+        fullStopRecordBtn.style.display = 'none';
+        fullStopRecordBtn.classList.remove('recording-pulse');
+    }
+
+    function showToast(msg) {
+        let toast = document.getElementById('customToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'customToast';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#2d2a24;color:#f5f1eb;padding:10px 24px;border-radius:60px;font-size:14px;font-weight:500;opacity:0;transition:opacity 0.25s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:999;white-space:nowrap;';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
 
     // ================================================================
     // 启动
     // ================================================================
     init();
+
 })();
 </script>
 </body>
