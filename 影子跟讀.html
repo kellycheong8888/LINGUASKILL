@@ -5,492 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>影子跟读 · Linguaskill Business</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #fbf8f0;
-            color: #3d3d3d;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            padding: 16px 14px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .app-container {
-            max-width: 820px;
-            width: 100%;
-        }
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e8e0d8;
-        }
-        .app-header h1 {
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: #5b8c5a;
-            letter-spacing: 0.5px;
-        }
-        .app-header h1 span {
-            color: #d4a373;
-        }
-        .version-badge {
-            font-size: 0.7rem;
-            background: #e8e0d8;
-            padding: 3px 14px;
-            border-radius: 30px;
-            color: #8a7a6a;
-            cursor: default;
-            user-select: none;
-        }
-        .version-badge:active {
-            transform: scale(0.95);
-        }
-        .browser-warning {
-            background: #f5ede4;
-            color: #8a6a4a;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            border-left: 4px solid #d4a373;
-        }
-        .browser-warning.show {
-            display: flex;
-        }
-        .control-bar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px 12px;
-            margin-bottom: 20px;
-            background: #ffffff;
-            padding: 12px 18px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(160, 120, 80, 0.08);
-            border: 1px solid #ece5dd;
-        }
-        .control-bar select {
-            background: #f5f0eb;
-            color: #3d3d3d;
-            border: 1px solid #d5cdc5;
-            padding: 7px 14px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            outline: none;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .control-bar select:focus {
-            border-color: #5b8c5a;
-            box-shadow: 0 0 0 3px rgba(91, 140, 90, 0.15);
-        }
-        #passageSelect {
-            min-width: 150px;
-        }
-        #voiceSelect {
-            min-width: 140px;
-        }
-        .progress-text {
-            font-size: 0.9rem;
-            background: #f5f0eb;
-            padding: 4px 16px;
-            border-radius: 30px;
-            border: 1px solid #d5cdc5;
-            white-space: nowrap;
-            font-weight: 500;
-            color: #6a5a4a;
-        }
-        .action-btn {
-            background: #5b8c5a;
-            border: none;
-            color: #ffffff;
-            font-weight: 600;
-            padding: 7px 24px;
-            border-radius: 40px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.25s;
-            margin-left: auto;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 14px rgba(91, 140, 90, 0.3);
-        }
-        .action-btn:disabled {
-            opacity: 0.5;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-        .action-btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-        .action-btn.secondary {
-            background: #d4a373;
-            box-shadow: 0 4px 14px rgba(212, 163, 115, 0.3);
-        }
-        .sentences-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin: 16px 0 24px;
-        }
-        .sentence-card {
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 16px 20px;
-            border-left: 6px solid #d5cdc5;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(160, 120, 80, 0.06);
-            border: 1px solid #ece5dd;
-        }
-        .sentence-card.active-tts {
-            border-left-color: #d4a373;
-            box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.15), 0 4px 24px rgba(160, 120, 80, 0.1);
-            animation: breathe-glow-light 1.6s infinite;
-        }
-        @keyframes breathe-glow-light {
-            0% { box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.1), 0 2px 12px rgba(0,0,0,0.04); }
-            50% { box-shadow: 0 0 0 8px rgba(212, 163, 115, 0.2), 0 4px 24px rgba(212, 163, 115, 0.12); }
-            100% { box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.1), 0 2px 12px rgba(0,0,0,0.04); }
-        }
-        .sentence-card.recording {
-            border-left-color: #c0392b;
-            box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.12), 0 4px 20px rgba(192, 57, 43, 0.08);
-            animation: pulse-rec-light 0.9s infinite;
-        }
-        @keyframes pulse-rec-light {
-            0% { box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.1); }
-            50% { box-shadow: 0 0 0 10px rgba(192, 57, 43, 0.18); }
-            100% { box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.1); }
-        }
-        .sentence-card.completed {
-            border-left-color: #7aa87a;
-        }
-        .sentence-text {
-            font-size: 17px;
-            line-height: 1.7;
-            color: #3d3d3d;
-            cursor: pointer;
-            padding: 4px 0;
-            border-radius: 4px;
-            transition: 0.2s;
-            user-select: none;
-        }
-        .sentence-text.hidden {
-            background: #e8e0d8;
-            color: transparent;
-            border-radius: 6px;
-            padding: 4px 10px;
-            min-height: 1.7em;
-            cursor: pointer;
-        }
-        .sentence-text.hidden::before {
-            content: "👆 点击显示英文";
-            color: #8a7a6a;
-            font-size: 14px;
-        }
-        .translation-area {
-            margin-top: 6px;
-            font-size: 15px;
-            color: #6a5a4a;
-            padding: 6px 12px;
-            background: #f5f0eb;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.25s;
-            min-height: 2.2em;
-            display: flex;
-            align-items: center;
-            user-select: none;
-        }
-        .translation-area.hidden {
-            background: #e8e0d8;
-            color: transparent;
-        }
-        .translation-area.hidden::before {
-            content: "👆 点击显示翻译";
-            color: #8a7a6a;
-            font-size: 14px;
-        }
-        .translation-area .zh-text {
-            color: #3d3d3d;
-        }
-        .translation-area.hidden .zh-text {
-            display: none;
-        }
-        .card-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: #8a7a6a;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-        .accuracy-badge {
-            color: #5b8c5a;
-            font-weight: 600;
-            background: #f0f7ef;
-            padding: 2px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-        }
-        .comparison-result {
-            margin-top: 10px;
-            background: #f5f0eb;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 0.92rem;
-            display: none;
-            flex-wrap: wrap;
-            gap: 4px 6px;
-            border-left: 4px solid #d4a373;
-        }
-        .comparison-result.show {
-            display: flex;
-        }
-        .word-match {
-            color: #5b8c5a;
-            font-weight: 500;
-        }
-        .word-mismatch {
-            color: #c0392b;
-            background: #fdedec;
-            padding: 0 6px;
-            border-radius: 4px;
-            position: relative;
-            font-weight: 500;
-        }
-        .word-mismatch::after {
-            content: attr(data-correct);
-            position: absolute;
-            bottom: -1.4em;
-            left: 0;
-            font-size: 0.7rem;
-            color: #a93226;
-            background: #fff;
-            padding: 0 8px;
-            border-radius: 6px;
-            white-space: nowrap;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .word-mismatch:hover::after {
-            display: block;
-        }
-        .manual-input-area {
-            margin-top: 10px;
-            display: none;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .manual-input-area.show {
-            display: flex;
-        }
-        .manual-input-area input {
-            flex: 1;
-            min-width: 150px;
-            padding: 8px 14px;
-            border: 2px solid #d5cdc5;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            background: #ffffff;
-            outline: none;
-            transition: 0.2s;
-        }
-        .manual-input-area input:focus {
-            border-color: #5b8c5a;
-            box-shadow: 0 0 0 3px rgba(91, 140, 90, 0.12);
-        }
-        .manual-input-area .mini-btn {
-            background: #5b8c5a;
-            color: #fff;
-            border: none;
-            padding: 6px 20px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .manual-input-area .mini-btn:hover {
-            background: #4a7a49;
-        }
-        .waveform-wrapper {
-            background: #f5f0eb;
-            border-radius: 14px;
-            padding: 4px 0;
-            margin: 6px 0 2px;
-            height: 48px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .waveform-wrapper.active {
-            display: flex;
-        }
-        .waveform-wrapper canvas {
-            width: 100%;
-            height: 40px;
-            border-radius: 10px;
-            background: #f5f0eb;
-        }
-        .sentence-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid #ece5dd;
-        }
-        .sentence-actions .mini-btn {
-            background: #f5f0eb;
-            border: 1px solid #d5cdc5;
-            color: #3d3d3d;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 0.78rem;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .sentence-actions .mini-btn:hover {
-            background: #ece5dd;
-        }
-        .sentence-actions .mini-btn.active {
-            background: #c0392b;
-            color: #fff;
-            border-color: #c0392b;
-            animation: pulse-rec-light 0.9s infinite;
-        }
-        .sentence-actions .mini-btn.primary {
-            background: #5b8c5a;
-            color: #fff;
-            border-color: #5b8c5a;
-        }
-        .sentence-actions .mini-btn.primary:hover {
-            background: #4a7a49;
-        }
-        .sentence-actions .mini-btn.success {
-            background: #7aa87a;
-            color: #fff;
-            border-color: #7aa87a;
-        }
-        .sentence-actions .mini-btn.success:hover {
-            background: #6a9a6a;
-        }
-        .sentence-actions .mini-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .report-area {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 22px;
-            margin-top: 24px;
-            display: none;
-            border: 1px solid #ece5dd;
-            box-shadow: 0 4px 24px rgba(160, 120, 80, 0.06);
-        }
-        .report-area.show {
-            display: block;
-        }
-        .report-area h3 {
-            color: #5b8c5a;
-            margin-bottom: 14px;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-        .report-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px 32px;
-            background: #f5f0eb;
-            padding: 14px 20px;
-            border-radius: 16px;
-        }
-        .report-stats div {
-            font-size: 0.92rem;
-        }
-        .report-stats strong {
-            color: #5b8c5a;
-        }
-        .report-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .report-actions .action-btn {
-            margin-left: 0;
-        }
-        .history-area {
-            margin-top: 24px;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 14px 18px;
-            font-size: 0.85rem;
-            border: 1px solid #ece5dd;
-        }
-        .history-area h4 {
-            color: #8a7a6a;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            border-bottom: 1px solid #f0ebe5;
-            color: #4a4a4a;
-        }
-        @media (max-width: 640px) {
-            .control-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .action-btn {
-                margin-left: 0;
-                text-align: center;
-            }
-            .sentence-actions {
-                gap: 5px;
-            }
-            .sentence-actions .mini-btn {
-                font-size: 0.72rem;
-                padding: 4px 10px;
-            }
-            .sentence-text {
-                font-size: 15px;
-            }
-            .app-header h1 {
-                font-size: 1.2rem;
-            }
-        }
-        @media (max-width: 420px) {
-            .sentence-actions .mini-btn {
-                font-size: 0.65rem;
-                padding: 3px 8px;
-            }
-            .sentence-card {
-                padding: 12px 14px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fbf8f0; color: #3d3d3d; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px 14px 60px; display: flex; flex-direction: column; align-items: center; }
+        .app-container { max-width: 820px; width: 100%; }
+        .app-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #e8e0d8; }
+        .app-header h1 { font-weight: 600; font-size: 1.5rem; color: #5b8c5a; letter-spacing: 0.5px; }
+        .app-header h1 span { color: #d4a373; }
+        .version-badge { font-size: 0.7rem; background: #e8e0d8; padding: 3px 14px; border-radius: 30px; color: #8a7a6a; cursor: default; user-select: none; }
+        .version-badge:active { transform: scale(0.95); }
+        .browser-warning { background: #f5ede4; color: #8a6a4a; padding: 10px 16px; border-radius: 12px; font-weight: 500; margin-bottom: 16px; display: none; align-items: center; gap: 8px; font-size: 0.9rem; border-left: 4px solid #d4a373; }
+        .browser-warning.show { display: flex; }
+        .control-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 20px; background: #ffffff; padding: 12px 18px; border-radius: 16px; box-shadow: 0 4px 20px rgba(160,120,80,0.08); border: 1px solid #ece5dd; }
+        .control-bar select { background: #f5f0eb; color: #3d3d3d; border: 1px solid #d5cdc5; padding: 7px 14px; border-radius: 30px; font-size: 0.9rem; outline: none; cursor: pointer; font-weight: 500; }
+        .control-bar select:focus { border-color: #5b8c5a; box-shadow: 0 0 0 3px rgba(91,140,90,0.15); }
+        #passageSelect { min-width: 150px; }
+        #voiceSelect { min-width: 140px; }
+        .progress-text { font-size: 0.9rem; background: #f5f0eb; padding: 4px 16px; border-radius: 30px; border: 1px solid #d5cdc5; white-space: nowrap; font-weight: 500; color: #6a5a4a; }
+        .action-btn { background: #5b8c5a; border: none; color: #ffffff; font-weight: 600; padding: 7px 24px; border-radius: 40px; font-size: 0.95rem; cursor: pointer; transition: 0.25s; margin-left: auto; letter-spacing: 0.3px; box-shadow: 0 4px 14px rgba(91,140,90,0.3); }
+        .action-btn:disabled { opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+        .action-btn:active:not(:disabled) { transform: scale(0.95); }
+        .action-btn.secondary { background: #d4a373; box-shadow: 0 4px 14px rgba(212,163,115,0.3); }
+        .sentences-list { display: flex; flex-direction: column; gap: 16px; margin: 16px 0 24px; }
+        .sentence-card { background: #ffffff; border-radius: 18px; padding: 16px 20px; border-left: 6px solid #d5cdc5; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(160,120,80,0.06); border: 1px solid #ece5dd; }
+        .sentence-card.active-tts { border-left-color: #d4a373; box-shadow: 0 0 0 4px rgba(212,163,115,0.15), 0 4px 24px rgba(160,120,80,0.1); animation: breathe-glow-light 1.6s infinite; }
+        @keyframes breathe-glow-light { 0% { box-shadow: 0 0 0 4px rgba(212,163,115,0.1), 0 2px 12px rgba(0,0,0,0.04); } 50% { box-shadow: 0 0 0 8px rgba(212,163,115,0.2), 0 4px 24px rgba(212,163,115,0.12); } 100% { box-shadow: 0 0 0 4px rgba(212,163,115,0.1), 0 2px 12px rgba(0,0,0,0.04); } }
+        .sentence-card.recording { border-left-color: #c0392b; box-shadow: 0 0 0 4px rgba(192,57,43,0.12), 0 4px 20px rgba(192,57,43,0.08); animation: pulse-rec-light 0.9s infinite; }
+        @keyframes pulse-rec-light { 0% { box-shadow: 0 0 0 4px rgba(192,57,43,0.1); } 50% { box-shadow: 0 0 0 10px rgba(192,57,43,0.18); } 100% { box-shadow: 0 0 0 4px rgba(192,57,43,0.1); } }
+        .sentence-card.completed { border-left-color: #7aa87a; }
+        .sentence-text { font-size: 17px; line-height: 1.7; color: #3d3d3d; cursor: pointer; padding: 4px 0; border-radius: 4px; transition: 0.2s; user-select: none; }
+        .sentence-text.hidden { background: #e8e0d8; color: transparent; border-radius: 6px; padding: 4px 10px; min-height: 1.7em; cursor: pointer; }
+        .sentence-text.hidden::before { content: "👆 点击显示英文"; color: #8a7a6a; font-size: 14px; }
+        .translation-area { margin-top: 6px; font-size: 15px; color: #6a5a4a; padding: 6px 12px; background: #f5f0eb; border-radius: 10px; cursor: pointer; transition: 0.25s; min-height: 2.2em; display: flex; align-items: center; user-select: none; }
+        .translation-area.hidden { background: #e8e0d8; color: transparent; }
+        .translation-area.hidden::before { content: "👆 点击显示翻译"; color: #8a7a6a; font-size: 14px; }
+        .translation-area .zh-text { color: #3d3d3d; }
+        .translation-area.hidden .zh-text { display: none; }
+        .card-status { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.8rem; color: #8a7a6a; flex-wrap: wrap; gap: 4px; }
+        .accuracy-badge { color: #5b8c5a; font-weight: 600; background: #f0f7ef; padding: 2px 14px; border-radius: 30px; font-size: 0.8rem; }
+        .comparison-result { margin-top: 10px; background: #f5f0eb; padding: 10px 14px; border-radius: 12px; font-size: 0.92rem; display: none; flex-wrap: wrap; gap: 4px 6px; border-left: 4px solid #d4a373; }
+        .comparison-result.show { display: flex; }
+        .word-match { color: #5b8c5a; font-weight: 500; }
+        .word-mismatch { color: #c0392b; background: #fdedec; padding: 0 6px; border-radius: 4px; position: relative; font-weight: 500; }
+        .word-mismatch::after { content: attr(data-correct); position: absolute; bottom: -1.4em; left: 0; font-size: 0.7rem; color: #a93226; background: #fff; padding: 0 8px; border-radius: 6px; white-space: nowrap; display: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .word-mismatch:hover::after { display: block; }
+        .manual-input-area { margin-top: 10px; display: none; gap: 8px; flex-wrap: wrap; }
+        .manual-input-area.show { display: flex; }
+        .manual-input-area input { flex: 1; min-width: 150px; padding: 8px 14px; border: 2px solid #d5cdc5; border-radius: 30px; font-size: 0.9rem; background: #ffffff; outline: none; transition: 0.2s; }
+        .manual-input-area input:focus { border-color: #5b8c5a; box-shadow: 0 0 0 3px rgba(91,140,90,0.12); }
+        .manual-input-area .mini-btn { background: #5b8c5a; color: #fff; border: none; padding: 6px 20px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .manual-input-area .mini-btn:hover { background: #4a7a49; }
+        .waveform-wrapper { background: #f5f0eb; border-radius: 14px; padding: 4px 0; margin: 6px 0 2px; height: 48px; display: none; align-items: center; justify-content: center; }
+        .waveform-wrapper.active { display: flex; }
+        .waveform-wrapper canvas { width: 100%; height: 40px; border-radius: 10px; background: #f5f0eb; }
+        .sentence-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #ece5dd; }
+        .sentence-actions .mini-btn { background: #f5f0eb; border: 1px solid #d5cdc5; color: #3d3d3d; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; cursor: pointer; transition: 0.2s; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+        .sentence-actions .mini-btn:hover { background: #ece5dd; }
+        .sentence-actions .mini-btn.active { background: #c0392b; color: #fff; border-color: #c0392b; animation: pulse-rec-light 0.9s infinite; }
+        .sentence-actions .mini-btn.primary { background: #5b8c5a; color: #fff; border-color: #5b8c5a; }
+        .sentence-actions .mini-btn.primary:hover { background: #4a7a49; }
+        .sentence-actions .mini-btn.success { background: #7aa87a; color: #fff; border-color: #7aa87a; }
+        .sentence-actions .mini-btn.success:hover { background: #6a9a6a; }
+        .sentence-actions .mini-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .report-area { background: #ffffff; border-radius: 20px; padding: 22px; margin-top: 24px; display: none; border: 1px solid #ece5dd; box-shadow: 0 4px 24px rgba(160,120,80,0.06); }
+        .report-area.show { display: block; }
+        .report-area h3 { color: #5b8c5a; margin-bottom: 14px; font-weight: 600; font-size: 1.2rem; }
+        .report-stats { display: flex; flex-wrap: wrap; gap: 20px 32px; background: #f5f0eb; padding: 14px 20px; border-radius: 16px; }
+        .report-stats div { font-size: 0.92rem; }
+        .report-stats strong { color: #5b8c5a; }
+        .report-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .report-actions .action-btn { margin-left: 0; }
+        .history-area { margin-top: 24px; background: #ffffff; border-radius: 16px; padding: 14px 18px; font-size: 0.85rem; border: 1px solid #ece5dd; }
+        .history-area h4 { color: #8a7a6a; font-weight: 500; margin-bottom: 8px; }
+        .history-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0ebe5; color: #4a4a4a; }
+        @media (max-width: 640px) { .control-bar { flex-direction: column; align-items: stretch; } .action-btn { margin-left: 0; text-align: center; } .sentence-actions { gap: 5px; } .sentence-actions .mini-btn { font-size: 0.72rem; padding: 4px 10px; } .sentence-text { font-size: 15px; } .app-header h1 { font-size: 1.2rem; } }
+        @media (max-width: 420px) { .sentence-actions .mini-btn { font-size: 0.65rem; padding: 3px 8px; } .sentence-card { padding: 12px 14px; } }
     </style>
 </head>
 <body>
@@ -552,9 +140,10 @@
     }
 
     // ================================================================
-    // 3. 范文数据（精简版，仅包含投诉处理范文）
+    // 3. 范文数据（完整版 43 篇）
     // ================================================================
     const passages = [
+        // ---- 原有范文：投诉处理 ----
         {
             title: "How to Handle Customer Complaints Effectively",
             sentences: [
@@ -565,6 +154,619 @@
                 { en: "Finally, follow up with the customer to ensure their satisfaction.", zh: "最後，跟進客戶以確保他們滿意。" },
                 { en: "This approach not only resolves the problem but also builds trust.", zh: "這種方法不僅能解決問題，還能建立信任。" },
                 { en: "A well-handled complaint can turn a dissatisfied customer into a loyal one.", zh: "處理得當的投訴可以將不滿意的客戶轉變為忠實的客戶。" }
+            ]
+        },
+        // ===== Part 1 — Presentation =====
+        {
+            title: "範文 1：溫暖的回憶（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about a warm memory from when my son was little.", zh: "我想谈谈我儿子小时候的一个温暖回忆。" },
+                { en: "He was so adorable – he had a chubby little body and he always gave me the sweetest smile.", zh: "他太可爱了——胖乎乎的小身体，总是给我最甜美的笑容。" },
+                { en: "First of all, there was one particular afternoon that I still remember vividly.", zh: "首先，有一个特别的下午我至今记忆犹新。" },
+                { en: "He was playing with our cat in the living room.", zh: "他正在客厅里和我们的猫玩耍。" },
+                { en: "They were chasing each other around, playfully hitting and rolling on the floor.", zh: "它们互相追逐，嬉戏打闹，在地板上滚来滚去。" },
+                { en: "It was so funny to watch them together.", zh: "看着它们在一起真是太有趣了。" },
+                { en: "In addition to that, the most hilarious part was when they both tried to squeeze into the washing machine afterwards.", zh: "除此之外，最搞笑的是之后它们俩都想挤进洗衣机里。" },
+                { en: "They were so small and curious, and they seemed to think it was a great hiding place!", zh: "它们那么小又好奇，似乎觉得那是个很棒的藏身之处！" },
+                { en: "I just sat there watching them, feeling so happy and content.", zh: "我就坐在那里看着它们，感到非常幸福和满足。" },
+                { en: "Finally, looking back at that moment now, I still feel really warm inside.", zh: "最后，现在回想那一刻，我内心仍然感到非常温暖。" },
+                { en: "This is mainly because everyone I loved was right there with me – my son, my cat, all together in that sunny afternoon.", zh: "这主要是因为所有我爱的人都在我身边——我的儿子、我的猫，都在那个阳光明媚的下午聚在一起。" },
+                { en: "It was a moment of pure happiness, and I will always treasure it.", zh: "那是一个纯粹快乐的时刻，我会永远珍惜它。" }
+            ]
+        },
+        {
+            title: "範文 2：慶祝活動（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about a celebration that I really enjoyed – it was Christmas.", zh: "我想谈谈一个我真的很喜欢的庆祝活动——那是圣诞节。" },
+                { en: "That year, I went to Hong Kong with my husband to celebrate the holiday.", zh: "那一年，我和丈夫去了香港庆祝节日。" },
+                { en: "First of all, the Christmas atmosphere on the streets was absolutely magical.", zh: "首先，街上的圣诞气氛绝对神奇。" },
+                { en: "Everywhere we looked, there were beautiful lights, decorations, and Christmas trees.", zh: "我们目之所及，到处都是美丽的灯光、装饰和圣诞树。" },
+                { en: "It felt so festive and joyful.", zh: "感觉如此喜庆和快乐。" },
+                { en: "In addition to that, we did so many wonderful things together.", zh: "除此之外，我们还一起做了很多美好的事情。" },
+                { en: "We took lots of photos by the seaside, walked around the shopping malls, and in the evening, we had a romantic dinner with a beautiful view.", zh: "我们在海边拍了很多照片，逛了商场，晚上还享用了有美景相伴的浪漫晚餐。" },
+                { en: "After that, we watched the stunning night view of Victoria Harbour – it was breathtaking.", zh: "之后，我们欣赏了维多利亚港令人惊叹的夜景——美得令人窒息。" },
+                { en: "Finally, looking back at that celebration now, I still feel incredibly happy and sweet inside.", zh: "最后，现在回想那个庆祝活动，我内心仍然感到无比幸福和甜蜜。" },
+                { en: "This is mainly because it was a special time for just the two of us, away from our daily routines.", zh: "这主要是因为那是只属于我们两个人的特殊时光，远离了日常琐事。" },
+                { en: "It was a truly memorable and romantic experience that I will always cherish.", zh: "那是一次真正难忘而浪漫的经历，我会永远珍惜。" }
+            ]
+        },
+        {
+            title: "範文 3：成功的團隊專案（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about a successful team work experience that I still remember very well.", zh: "我想谈谈一次我至今记忆犹新的成功的团队合作经历。" },
+                { en: "At that time, I was working as a salesperson in a retail store.", zh: "那时，我在一家零售店做销售员。" },
+                { en: "First of all, one day, a customer came to our shop with her family.", zh: "首先，有一天，一位顾客带着家人来到我们店里。" },
+                { en: "We found out that it was her birthday, so my team and I decided to do something special for her.", zh: "我们得知那天是她的生日，所以我和团队决定为她做些特别的事情。" },
+                { en: "We secretly decorated the fitting room with beautiful balloons and lights to create a little surprise party for her.", zh: "我们偷偷用漂亮的气球和灯饰装饰了试衣间，为她创造了一个小小的惊喜派对。" },
+                { en: "In addition to that, when we brought her to the fitting room, she was so surprised and touched.", zh: "除此之外，当我们带她到试衣间时，她非常惊讶和感动。" },
+                { en: "She was really excited and emotional, and she kept thanking us.", zh: "她非常激动和感动，一直感谢我们。" },
+                { en: "Seeing her happy face made all our efforts worthwhile – we all felt really proud and joyful too.", zh: "看到她开心的脸庞，我们所有的努力都值得了——我们也感到非常自豪和快乐。" },
+                { en: "Finally, looking back at that experience now, I genuinely feel that bringing happiness to others and giving them a special memory is a wonderful thing.", zh: "最后，现在回想那段经历，我真心觉得给别人带来快乐、给他们留下特别的回忆是一件美好的事情。" },
+                { en: "This is mainly because it reminds me that small gestures can make a big difference to someone's day.", zh: "这主要是因为它提醒我，小小的举动可以给某人的一天带来巨大的改变。" },
+                { en: "It was not just a successful teamwork – it was also a meaningful lesson for me.", zh: "这不仅仅是一次成功的团队合作——对我来说也是一次有意义的教训。" }
+            ]
+        },
+        {
+            title: "範文 4：想為家裡買的東西（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about something I'd like to get for my home – and interestingly, it's not a thing, it's a cat.", zh: "我想谈谈我想为家里添置的一样东西——有趣的是，它不是一件物品，而是一只猫。" },
+                { en: "First of all, many years ago, I had a cat.", zh: "首先，很多年前，我养过一只猫。" },
+                { en: "It was so adorable – it had fluffy orange fur and a round, chubby belly.", zh: "它太可爱了——有着蓬松的橘色毛发和圆滚滚的肚子。" },
+                { en: "Every day, spending time with it was so comforting and healing for me.", zh: "每天和它在一起的时光对我来说是如此的安慰和治愈。" },
+                { en: "It really made my life brighter.", zh: "它真的让我的生活更加明亮。" },
+                { en: "However, sadly, I lost that cat unexpectedly.", zh: "然而，遗憾的是，我意外失去了那只猫。" },
+                { en: "It was a very painful experience for me at that time.", zh: "那对我来说是一段非常痛苦的经历。" },
+                { en: "Now, many years have passed.", zh: "现在，很多年过去了。" },
+                { en: "I have my own child, and luckily, my son also loves cats.", zh: "我有了自己的孩子，幸运的是，我儿子也喜欢猫。" },
+                { en: "So we are thinking about adopting a new cat to keep him company and give him a happy childhood.", zh: "所以我们正在考虑收养一只新猫来陪伴他，给他一个快乐的童年。" },
+                { en: "Finally, looking back at the days I spent with my previous cat, I still feel so warm and grateful.", zh: "最后，回想我和以前那只猫度过的日子，我仍然感到温暖和感激。" },
+                { en: "I truly believe my son will also have such sweet memories with a new cat in the future.", zh: "我真心相信我的儿子将来也会和新猫有如此甜蜜的回忆。" }
+            ]
+        },
+        {
+            title: "範文 5：簡報經驗（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about a time when I gave a presentation at university.", zh: "我想谈谈我在大学做演讲的一次经历。" },
+                { en: "It was actually for a department chairman – I had to present in front of a lot of important people.", zh: "实际上是给系主任做的——我不得不在很多重要人物面前演讲。" },
+                { en: "First of all, I remember I was extremely nervous before I went on stage.", zh: "首先，我记得在上台前我极度紧张。" },
+                { en: "When I stood there and saw so many people looking at me, my voice started trembling.", zh: "当我站在那里，看到那么多人在看我时，我的声音开始颤抖。" },
+                { en: "I could feel my heart beating so fast, and I was so worried that I might forget everything I had prepared.", zh: "我能感觉到心跳得很快，我非常担心自己可能会忘记准备好的所有内容。" },
+                { en: "In addition to that, even though I felt really scared, I managed to finish my presentation.", zh: "除此之外，尽管我感到非常害怕，我还是设法完成了演讲。" },
+                { en: "I just kept going and tried not to stop, even though I wasn't feeling confident at all.", zh: "我只是继续讲下去，努力不停止，尽管我完全没有信心。" },
+                { en: "However, after it was over, I felt quite disappointed in myself because I thought I hadn't prepared well enough.", zh: "然而，结束后，我对自己感到相当失望，因为我觉得自己准备得不够充分。" },
+                { en: "I kept thinking that I could have done much better.", zh: "我一直在想我本可以做得更好。" },
+                { en: "Even though my friends encouraged me and said I did a great job, I couldn't really believe it at that time.", zh: "尽管朋友们鼓励我说我做得很好，但当时我真的无法相信。" },
+                { en: "Finally, looking back at that experience now, I realise that I actually learned something valuable from it.", zh: "最后，现在回想那段经历，我意识到我实际上从中学到了一些宝贵的东西。" },
+                { en: "This is mainly because it taught me that the more I practise, the more confident I will become.", zh: "这主要是因为它教会我，练习得越多，我就会变得越自信。" },
+                { en: "Even if I still feel nervous, I can still find the right words to say.", zh: "即使我仍然感到紧张，我仍然能找到合适的话来说。" },
+                { en: "That experience made me stronger, and I'm grateful for it.", zh: "那段经历让我变得更强大，我对此心存感激。" }
+            ]
+        },
+        {
+            title: "範文 6：重要改變（工作/學習）（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about an important change in my life – it was the moment I decided to face my fear of public speaking during a university presentation.", zh: "我想谈谈我人生中的一个重要改变——那是我决定在大学演讲时面对公开演讲恐惧的时刻。" },
+                { en: "Before that, I used to avoid any situation where I had to speak in front of a large group of people.", zh: "在那之前，我常常回避任何需要在一大群人面前发言的场合。" },
+                { en: "I was always afraid of making mistakes or being judged by others.", zh: "我总是害怕犯错或被别人评判。" },
+                { en: "However, one day, I had to give a presentation in front of the department chairman and many important people.", zh: "然而，有一天，我不得不在系主任和很多重要人物面前做演讲。" },
+                { en: "I was extremely nervous before I went on stage.", zh: "上台前我极度紧张。" },
+                { en: "When I stood there and saw so many people looking at me, my voice started trembling.", zh: "当我站在那里，看到那么多人在看我时，我的声音开始颤抖。" },
+                { en: "I could feel my heart beating so fast, but I managed to finish my presentation somehow.", zh: "我能感觉到心跳得很快，但我还是设法完成了演讲。" },
+                { en: "Afterwards, I felt quite disappointed in myself because I thought I hadn't prepared well enough.", zh: "之后，我对自己感到相当失望，因为我觉得自己准备得不够充分。" },
+                { en: "Even though my friends encouraged me and said I did a great job, I couldn't really believe it at that time.", zh: "尽管朋友们鼓励我说我做得很好，但当时我真的无法相信。" },
+                { en: "Looking back now, I realise that this experience actually changed me.", zh: "现在回想起来，我意识到这段经历实际上改变了我。" },
+                { en: "It taught me that the more I practise, the more confident I will become.", zh: "它教会我，练习得越多，我就会变得越自信。" },
+                { en: "Even if I still feel nervous, I can still find the right words to say.", zh: "即使我仍然感到紧张，我仍然能找到合适的话来说。" },
+                { en: "That experience made me stronger, and I'm grateful for it.", zh: "那段经历让我变得更强大，我对此心存感激。" }
+            ]
+        },
+        {
+            title: "範文 7：人生改變——成為母親（官方題目）",
+            sentences: [
+                { en: "The most important change in my life was becoming a mother.", zh: "我人生中最重要的改变是成为一位母亲。" },
+                { en: "I had my baby two years ago, and it completely changed my world.", zh: "我两年前生了宝宝，这彻底改变了我的世界。" },
+                { en: "At that time, I was working as an engineering clerk near my home.", zh: "那时，我在家附近做工程文员。" },
+                { en: "However, I decided to leave my job so I could stay at home and take care of my child.", zh: "然而，我决定辞职，以便留在家里照顾孩子。" },
+                { en: "I was spending most of my days looking after him and watching him grow up.", zh: "我大部分时间都在照顾他，看着他长大。" },
+                { en: "Now, I feel both happy and worried.", zh: "现在，我既感到幸福又感到担忧。" },
+                { en: "My child has brought me so much joy.", zh: "我的孩子给我带来了很多快乐。" },
+                { en: "However, I sometimes worry that if I don't work for a long time, I might lose touch with society.", zh: "然而，我有时担心如果长时间不工作，我可能会与社会脱节。" },
+                { en: "That's why I am learning Portuguese and taking training courses to improve myself.", zh: "这就是为什么我在学习葡萄牙语并参加培训课程来提升自己。" },
+                { en: "Looking back, I believe this change has made me a stronger person.", zh: "回顾过去，我相信这个改变让我变得更坚强了。" }
+            ]
+        },
+        {
+            title: "範文 8：工作意外——老闆簽錯文件（官方題目）",
+            sentences: [
+                { en: "I would like to talk about a memorable incident that occurred while I was working as an engineering clerk.", zh: "我想谈谈我在做工程文员时发生的一件难忘的事件。" },
+                { en: "One day, my boss signed an important document for the government, but he used the old signature format by mistake.", zh: "有一天，我的老板签署了一份交给政府的重要文件，但他误用了旧的签名格式。" },
+                { en: "When we discovered the error, he had already gone on a business trip to another city.", zh: "当我们发现错误时，他已经去另一个城市出差了。" },
+                { en: "And even worse, the next day was the final deadline for submission.", zh: "更糟糕的是，第二天就是提交的最后期限。" },
+                { en: "We flew to his city and got him to sign again.", zh: "我们飞到他所在的城市，让他重新签名。" },
+                { en: "Luckily, we managed to submit the document just before the deadline.", zh: "幸运的是，我们赶在截止日期前成功提交了文件。" },
+                { en: "Looking back, I learnt that staying calm under pressure is really important – and to always double-check everything before it's too late.", zh: "回顾起来，我学到了在压力下保持冷静真的很重要——以及要在为时已晚之前永远反复检查所有事情。" }
+            ]
+        },
+        {
+            title: "範文 9：工作培訓課程（官方題目）",
+            sentences: [
+                { en: "I'd like to talk about a useful work training course I attended last year.", zh: "我想谈谈我去年参加的一个有用的工作培训课程。" },
+                { en: "It was a communication skills course, and it really left a deep impression on me.", zh: "那是一门沟通技巧课程，给我留下了深刻的印象。" },
+                { en: "First of all, the course was called AURA, which stands for Acknowledge, Understand, Repeat, and Explain.", zh: "首先，这门课程叫AURA，代表Acknowledge（认可）、Understand（理解）、Repeat（重复）和Explain（解释）。" },
+                { en: "It taught us how to handle disagreements and different opinions in a constructive way, and how to eventually reach an agreement with others.", zh: "它教会我们如何以建设性的方式处理分歧和不同意见，以及如何最终与他人达成一致。" },
+                { en: "In addition to that, what I found most valuable was that it gave us a clear structure to follow when communicating with people who think differently.", zh: "除此之外，我发现最有价值的是它给了我们一个清晰的框架，用于与想法不同的人沟通。" },
+                { en: "For instance, instead of arguing, we learned to first acknowledge their point of view, then understand their feelings, repeat what they said to confirm we heard them, and finally explain our own perspective.", zh: "例如，我们学会了不争论，而是先认可对方的观点，然后理解他们的感受，重复他们说的话以确认我们听到了，最后解释我们自己的观点。" },
+                { en: "Finally, looking back at this course now, I still find it incredibly useful – not just for work, but also for communicating with my family and friends.", zh: "最后，现在回想这门课程，我仍然觉得它非常有用——不仅对工作，对与家人和朋友沟通也是如此。" },
+                { en: "This is mainly because it has helped me reduce conflicts and build better relationships with people around me.", zh: "这主要是因为它帮助我减少了冲突，与周围的人建立了更好的关系。" },
+                { en: "It was truly a life-changing experience for me.", zh: "对我来说，这真的是一次改变人生的经历。" }
+            ]
+        },
+        {
+            title: "範文 10：壓力下的簡報經歷（官方題目）",
+            sentences: [
+                { en: "It was a presentation about the environmental impacts in my area.", zh: "那是一个关于我所在地区环境影响的演讲。" },
+                { en: "I'd spent a long time practising beforehand because I wanted to feel confident and what's more, I absolutely didn't want to read from notes.", zh: "我事前花了很长时间练习，因为我想感到自信，而且更重要的是，我绝对不想照着稿子念。" },
+                { en: "Having said that, I spoke a bit too quickly at first.", zh: "话虽如此，我一开始还是说得有点太快了。" },
+                { en: "I guess even with the practice, I was still nervous.", zh: "我想即使练习了，我还是很紧张。" },
+                { en: "All I can say is when the presentation was over, I felt a huge sense of relief.", zh: "我只能说当演讲结束时，我感到如释重负。" },
+                { en: "Overall, I guess I must have been really nervous.", zh: "总的来说，我想我一定非常紧张。" },
+                { en: "Even so, it was a good experience and although I still don't enjoy speaking in front of people, I know I'm more confident now.", zh: "即便如此，这仍是一次很好的经历，虽然我仍然不喜欢在众人面前讲话，但我知道我现在更有信心了。" },
+                { en: "The reason, I'm not sure I'd jump at the opportunity to do it again.", zh: "至于原因，我不确定我会抓住机会再来一次。" }
+            ]
+        },
+        // ===== Part 2.1 — Summary =====
+        {
+            title: "範文 1：資料庫轉換期間的時間管理（官方題目）",
+            sentences: [
+                { en: "Hey, since you missed the training session, let me give you a quick summary.", zh: "嘿，既然你错过了培训课程，让我给你做个快速总结。" },
+                { en: "First of all, you need to prioritise your tasks.", zh: "首先，你需要优先安排你的任务。" },
+                { en: "Focus only on core client work and dedicate one to two hours every day to training on the new system.", zh: "只专注于核心客户工作，每天花一到两小时练习新系统。" },
+                { en: "Also, keep in mind that you must maintain open communication.", zh: "另外，记住你必须保持开放的沟通。" },
+                { en: "If you fall behind or face technical problems, you should inform your manager immediately.", zh: "如果你落后了或遇到技术问题，你应该立即通知你的经理。" },
+                { en: "In addition to that, they encourage us to use the peer-support network.", zh: "除此之外，他们鼓励我们使用同伴支持网络。" },
+                { en: "Each department has selected 'super-users' who can provide instant help, so you don't have to wait for the IT helpdesk.", zh: "每个部门都选出了'超级用户'，他们可以提供即时帮助，所以你不用等IT服务台。" },
+                { en: "So, in short, the main takeaways are: prioritise tasks, communicate problems early, and use super-users for support.", zh: "所以，简而言之，主要收获是：优先安排任务、及早沟通问题、利用超级用户获得支持。" }
+            ]
+        },
+        {
+            title: "範文 2：選擇適合的課外運動（官方題目）",
+            sentences: [
+                { en: "Hey, since you missed the sports briefing, let me give you a quick summary.", zh: "嘿，既然你错过了体育简报，让我给你做个快速总结。" },
+                { en: "First of all, you should choose a sport based on your personal strengths.", zh: "首先，你应该根据个人优势选择运动。" },
+                { en: "For instance, if you are fast, basketball could be a good choice, whereas if you have good stamina, you might prefer running or swimming.", zh: "例如，如果你速度快，篮球可能是个好选择，而如果你耐力好，你可能更喜欢跑步或游泳。" },
+                { en: "Also, you need to consider whether you prefer teamwork or individual activities.", zh: "另外，你需要考虑你是喜欢团队活动还是个人活动。" },
+                { en: "Some people enjoy being part of a team, while others prefer to exercise alone.", zh: "有些人喜欢成为团队的一员，而有些人则更喜欢独自锻炼。" },
+                { en: "Finally, the coach emphasised the importance of long-term enjoyment.", zh: "最后，教练强调了长期享受的重要性。" },
+                { en: "You should pick something you genuinely like doing, not just something that looks good.", zh: "你应该选择你真正喜欢做的事情，而不仅仅是看起来不错的事情。" },
+                { en: "So, that's the key information you need to know.", zh: "所以，这就是你需要知道的关键信息。" }
+            ]
+        },
+        {
+            title: "範文 3：博物館參觀安排（官方題目）",
+            sentences: [
+                { en: "Hey, since you missed the tutorial, let me give you a quick update.", zh: "嘿，既然你错过了辅导课，让我给你做个快速更新。" },
+                { en: "First of all, the tutor mentioned that students who prefer taking notes by hand must notify her in advance to get physical printouts instead of using digital devices.", zh: "首先，导师提到，偏好手写笔记的学生必须提前通知她，以便获得纸质讲义，而不是使用电子设备。" },
+                { en: "Also, keep in mind that although the final project is a group presentation, students have total freedom at the museum to either work alone or divide the tasks.", zh: "另外，记住虽然最终作业是小组展示，但学生在博物馆里完全可以自由选择独自工作或分工合作。" },
+                { en: "In addition to that, they pointed out that the trip is strictly mandatory because it provides exclusive access to library papers that cannot be found online.", zh: "除此之外，他们指出这次参观是强制性的，因为它提供了无法在网上找到的图书馆资料的专属使用权。" },
+                { en: "So, in short, the main takeaways are: bring your own device or request paper in advance, and don't miss the trip—it affects your grade.", zh: "所以，简而言之，主要收获是：自备设备或提前申请纸质材料，不要错过这次参观——它会影响你的成绩。" }
+            ]
+        },
+        {
+            title: "範文 4：May Ball（五月舞會）安排（官方題目）",
+            sentences: [
+                { en: "Hey, you missed the announcement about the May Ball.", zh: "嘿，你错过了关于五月舞会的公告。" },
+                { en: "I'll give you a quick summary.", zh: "我给你做个快速总结。" },
+                { en: "Firstly, the main purpose is to celebrate finishing exams and help everyone relax.", zh: "首先，主要目的是庆祝考试结束，帮助大家放松。" },
+                { en: "Secondly, we were told that it's a very formal occasion.", zh: "其次，我们被告知这是一个非常正式的场合。" },
+                { en: "The guys have to wear black-tie suits, and the women need to wear elegant evening dresses.", zh: "男生必须穿黑领结西装，女生需要穿优雅的晚礼服。" },
+                { en: "Also, it's important to remember that Marta is going to stay at home on Saturday to get as much sleep as possible.", zh: "另外，重要的是要记住 Marta 周六会待在家里，以便尽可能多睡一点。" },
+                { en: "Finally, the speaker mentioned that they serve breakfast at the end of the ball.", zh: "最后，演讲者提到他们在舞会结束时提供早餐。" },
+                { en: "So, that's the key information you need to know.", zh: "所以，这就是你需要知道的关键信息。" }
+            ]
+        },
+        {
+            title: "範文 5：Craig 的婚禮（官方題目）",
+            sentences: [
+                { en: "Hey, since you missed the details about Craig's wedding, let me give you a quick update.", zh: "嘿，既然你错过了 Craig 婚礼的细节，让我给你做个快速更新。" },
+                { en: "First of all, the wedding will start at 9 AM and finish after lunch.", zh: "首先，婚礼将在上午9点开始，午餐后结束。" },
+                { en: "So it's going to be a morning ceremony.", zh: "所以这将是一个上午的仪式。" },
+                { en: "In addition, we've been told to wear kurta pajama, which is traditional Indian clothing.", zh: "此外，我们被告知要穿 kurta pajama，那是传统的印度服装。" },
+                { en: "Apparently it's very comfortable, so that's good news!", zh: "据说非常舒适，所以这是个好消息！" },
+                { en: "Also, at the beginning of the wedding, everyone will have breakfast together.", zh: "另外，在婚礼开始时，大家会一起吃早餐。" },
+                { en: "It sounds like a very warm and relaxed celebration.", zh: "听起来是一个非常温馨和轻松的庆祝活动。" },
+                { en: "So, that's the key information you need to know.", zh: "所以，这就是你需要知道的关键信息。" }
+            ]
+        },
+        {
+            title: "範文 6：建立更好的職場（官方題目）",
+            sentences: [
+                { en: "Hey, you missed the talk about building a better workplace.", zh: "嘿，你错过了关于建立更好职场的谈话。" },
+                { en: "I'll give you a quick summary.", zh: "我给你做个快速总结。" },
+                { en: "To begin with, work takes up about a third of our lives, so it's important to get things right.", zh: "首先，工作占据了我们大约三分之一的生命，所以把事情做好很重要。" },
+                { en: "In addition, a good management structure is vital, and HR isn't just about hiring – they need to support employees after they start.", zh: "此外，良好的管理结构至关重要，而人力资源部门不只是招聘——他们需要在员工入职后提供支持。" },
+                { en: "Furthermore, companies must stop thinking like a small business when they grow.", zh: "再者，公司在成长时必须停止像小企业那样思考。" },
+                { en: "Finally, just paying employees every month isn't enough – they also need help and support.", zh: "最后，每月只付工资是不够的——他们还需要帮助和支持。" },
+                { en: "Employees must feel they belong to the company's future.", zh: "员工必须感受到他们属于公司的未来。" },
+                { en: "So, that's the key information you need to know.", zh: "所以，这就是你需要知道的关键信息。" }
+            ]
+        },
+        {
+            title: "範文 7：Sheila 的職場壓力（官方題目）",
+            sentences: [
+                { en: "Sheila called Dr. Ibsen because she had some problems at work, but she hadn't found any solution yet.", zh: "Sheila 打电话给 Ibsen 医生，因为她在工作上遇到了一些问题，但她还没有找到任何解决方法。" },
+                { en: "For instance, she was suffering from time pressure, working alone most of the time, and a poor working environment.", zh: "例如，她承受着时间压力、大部分时间独自工作，以及恶劣的工作环境。" },
+                { en: "Last but not least, she also mentioned that she was getting very little sleep.", zh: "最后但同样重要的是，她还提到她睡眠严重不足。" },
+                { en: "Afterwards, Dr. Ibsen advised her to seek support from Human Resources and to talk honestly with her boss.", zh: "之后，Ibsen 医生建议她向人力资源部门寻求支持，并诚实地与老板沟通。" },
+                { en: "He also emphasised that HR isn't just about hiring – they also need to support existing employees.", zh: "他还强调，人力资源部门不只是招聘——他们也需要支持现有员工。" },
+                { en: "In short, Sheila's situation was difficult, but she got some practical advice on how to improve it.", zh: "简而言之，Sheila 的情况很困难，但她获得了一些关于如何改善的实用建议。" }
+            ]
+        },
+        {
+            title: "範文 8：專案管理課程安排（官方題目）",
+            sentences: [
+                { en: "Hey, since you missed the meeting, let me give you a quick update.", zh: "嘿，既然你错过了会议，让我给你做个快速更新。" },
+                { en: "First of all, the VP has put Annie in charge of finding a course on project management for junior managers.", zh: "首先，副总裁让 Annie 负责为初级经理找一门项目管理课程。" },
+                { en: "Also, keep in mind that the course needs to address issues with time and budget management, and it needs to be self-contained.", zh: "另外，记住课程需要解决时间和预算管理的问题，而且需要是自成体系的。" },
+                { en: "In addition to that, they pointed out that there is limited time available for the course, so it needs to be flexible.", zh: "除此之外，他们指出课程可用的时间有限，所以需要灵活安排。" },
+                { en: "So, in short, we need to find a self-contained, flexible course on project management that covers time and budget issues.", zh: "所以，简而言之，我们需要找到一门自成体系的、灵活的、涵盖时间和预算问题的项目管理课程。" }
+            ]
+        },
+        // ===== Part 2.2 — Discussion Questions =====
+        {
+            title: "主題 1：海外留學（官方題目）",
+            sentences: [
+                { en: "Q1: Why do you think people often want to go to university in another country?", zh: "Q1：为什么你认为人们经常想去另一个国家上大学？" },
+                { en: "In my opinion, people choose to study abroad because they want to experience a different culture and education system.", zh: "我认为，人们选择出国留学是因为他们想体验不同的文化和教育体系。" },
+                { en: "This is mainly because studying in another country can broaden their horizons and improve their language skills.", zh: "这主要是因为在一个不同的国家学习可以拓宽视野并提高语言技能。" },
+                { en: "For instance, many students go to the UK or the US to learn English while earning a degree.", zh: "例如，许多学生去英国或美国，在攻读学位的同时学习英语。" },
+                { en: "Q2: Do you think a university education should be free for everyone?", zh: "Q2：你认为大学教育应该对所有人免费吗？" },
+                { en: "In my opinion, university education should not be free for everyone.", zh: "我认为，大学教育不应该对所有人免费。" },
+                { en: "This is mainly because if education is completely free, people may not value it as much.", zh: "这主要是因为如果教育完全免费，人们可能不会那么重视它。" },
+                { en: "They might skip classes, put in less effort, or even drop out easily because they have nothing to lose.", zh: "他们可能会逃课、不那么努力，甚至轻易退学，因为他们没有什么可失去的。" },
+                { en: "For example, it's like a free buffet – when you don't have to pay for the food, you tend to waste it and take more than you can eat.", zh: "例如，这就像免费自助餐——当你不用为食物付钱时，你往往会浪费食物，拿得比你能吃的多。" },
+                { en: "Q3: In the future, do you think it will still be as important to get a university qualification?", zh: "Q3：在未来，你认为获得大学学历仍然会那么重要吗？" },
+                { en: "I think university qualifications will remain important, but they may not be the only path to success.", zh: "我认为大学学历仍然重要，但它们可能不是成功的唯一途径。" },
+                { en: "This is mainly because employers are increasingly valuing practical skills and experience.", zh: "这主要是因为雇主越来越重视实用技能和经验。" },
+                { en: "For instance, many tech companies now hire based on coding portfolios rather than degrees.", zh: "例如，许多科技公司现在是根据编程作品集而不是学位来招聘。" }
+            ]
+        },
+        {
+            title: "主題 2：學習相關（官方題目）",
+            sentences: [
+                { en: "Q1: Why is it important to develop good study skills?", zh: "Q1：为什么培养良好的学习技能很重要？" },
+                { en: "Good study skills are essential because they help you learn more efficiently and retain information longer.", zh: "良好的学习技能至关重要，因为它们能帮助你更高效地学习，更长久地记住信息。" },
+                { en: "This is mainly because effective techniques like active recall and spaced repetition strengthen memory.", zh: "这主要是因为像主动回忆和间隔重复这样的有效技巧能加强记忆。" },
+                { en: "For instance, students who use these methods often perform better in exams without studying for longer hours.", zh: "例如，使用这些方法的学生经常在考试中表现得更好，而不需要更长时间的学习。" },
+                { en: "Q2: At which age are people better at studying, do you think?", zh: "Q2：你认为人们在什么年龄更擅长学习？" },
+                { en: "In my opinion, young adults are generally better at studying because their brains are still developing and adapting to new information.", zh: "我认为，年轻人通常更擅长学习，因为他们的大脑仍在发育，能更好地适应新信息。" },
+                { en: "However, older adults have more life experience, which helps them connect new knowledge to existing understanding.", zh: "然而，年长的人有更多的生活经验，这有助于他们将新知识与已有的理解联系起来。" },
+                { en: "For instance, I find that I study more strategically now than when I was a teenager.", zh: "例如，我发现我现在比青少年时期学习得更策略性。" },
+                { en: "Q3: In the future, do you think the subjects taught at school will change?", zh: "Q3：在未来，你认为学校教授的科目会改变吗？" },
+                { en: "Yes, I expect school subjects will change significantly in the future.", zh: "是的，我预计未来的学校科目会有显著变化。" },
+                { en: "This is mainly because technology is advancing rapidly, so new skills like coding and data literacy will become essential.", zh: "这主要是因为技术正在快速发展，所以编程和数据素养等新技能将变得必不可少。" },
+                { en: "For example, some schools are already teaching AI and robotics instead of traditional computer science classes.", zh: "例如，一些学校已经在教授人工智能和机器人学，而不是传统的计算机科学课程。" }
+            ]
+        },
+        {
+            title: "主題 3：職場時間管理（官方題目）",
+            sentences: [
+                { en: "Q1: How do you personally stay organised during busy periods at work?", zh: "Q1：你在工作繁忙期间如何保持条理？" },
+                { en: "I stay organised by using a combination of digital tools and daily planning.", zh: "我通过结合使用数字工具和每日规划来保持条理。" },
+                { en: "This is mainly because having a clear schedule helps me prioritise urgent tasks.", zh: "这主要是因为清晰的日程安排帮助我优先处理紧急任务。" },
+                { en: "For instance, I use Trello to track my projects and block out time in my calendar for deep work without interruptions.", zh: "例如，我使用 Trello 来跟踪我的项目，并在日历中为深度工作安排时间，不受打扰。" },
+                { en: "Q2: Do you think modern technology helps or hinders our productivity?", zh: "Q2：你认为现代技术是提高还是阻碍了我们的生产力？" },
+                { en: "I think technology helps overall, but it can also be a double-edged sword.", zh: "我认为技术总体上是有帮助的，但它也可能是一把双刃剑。" },
+                { en: "This is mainly because apps and tools streamline many tasks, but constant notifications can be highly distracting.", zh: "这主要是因为应用程序和工具简化了许多任务，但持续的通知可能非常分散注意力。" },
+                { en: "For example, turning off push notifications during focus time has significantly boosted my efficiency.", zh: "例如，在专注时间关闭推送通知显著提高了我的效率。" },
+                { en: "Q3: How do you think the way we work will change in the next ten years?", zh: "Q3：你认为未来十年我们的工作方式会如何改变？" },
+                { en: "I expect work will become even more flexible and AI-driven.", zh: "我预计工作将变得更加灵活，并由人工智能驱动。" },
+                { en: "This is mainly because companies have seen that remote work can be productive.", zh: "这主要是因为公司已经看到远程工作可以提高生产力。" },
+                { en: "For instance, we may see AI assistants handling routine tasks, allowing humans to focus on creative and strategic work.", zh: "例如，我们可能会看到人工智能助手处理日常任务，让人类专注于创造性和战略性的工作。" }
+            ]
+        },
+        {
+            title: "主題 4：運動（官方題目）",
+            sentences: [
+                { en: "Q1: Given a choice, what sports would you like to play?", zh: "Q1：如果有选择，你喜欢做什么运动？" },
+                { en: "If I had a choice, I would like to play tennis and swimming.", zh: "如果我有选择，我喜欢打网球和游泳。" },
+                { en: "This is mainly because these sports are both fun and effective for maintaining fitness.", zh: "这主要是因为这两项运动既有趣又能有效保持健康。" },
+                { en: "For instance, tennis improves your agility, and swimming is gentle on the joints, so it's suitable for all ages.", zh: "例如，网球提高你的敏捷性，而游泳对关节温和，所以适合所有年龄段。" },
+                { en: "Q2: How do you think sports will change in the future?", zh: "Q2：你认为未来运动会如何变化？" },
+                { en: "I expect sports will become more technology-integrated and inclusive.", zh: "我预计运动将变得更加科技化和包容性。" },
+                { en: "This is mainly because devices like fitness trackers and VR can enhance training and participation.", zh: "这主要是因为像健身追踪器和虚拟现实这样的设备可以增强训练和参与度。" },
+                { en: "For example, VR sports games could allow people to play virtually even when they can't go to a physical court.", zh: "例如，虚拟现实体育游戏可以让人们即使不能去实体场地也能虚拟地玩。" }
+            ]
+        },
+        {
+            title: "主題 5：成功商務會議（官方題目）",
+            sentences: [
+                { en: "Q1: Some people say the choice of presenters is the most important thing for a successful conference. What do you think?", zh: "Q1：有些人说演讲者的选择是成功会议最重要的因素。你怎么看？" },
+                { en: "In my opinion, I think the choice of presenters is very important, but it's not the only factor.", zh: "我认为，演讲者的选择非常重要，但不是唯一因素。" },
+                { en: "This is mainly because even the best presenters cannot save a conference with poor organisation.", zh: "这主要是因为即使是最好的演讲者也挽救不了一个组织不善的会议。" },
+                { en: "For instance, if the venue is bad or the schedule is too tight, people will leave with a negative impression regardless of who spoke.", zh: "例如，如果场地不好或日程太紧，无论谁发言，人们都会带着负面印象离开。" },
+                { en: "Q2: What are the best ways to get feedback from people attending a conference?", zh: "Q2：从参加会议的人那里获得反馈的最好方法是什么？" },
+                { en: "I think the best way is to use a short digital survey right after each session.", zh: "我认为最好的方法是在每场会议后立即使用简短的数字调查。" },
+                { en: "This is mainly because people's memories are fresh and they're more likely to respond.", zh: "这主要是因为人们的记忆还很新鲜，他们更有可能回复。" },
+                { en: "For instance, sending a QR code to scan at the end of a talk is fast and convenient, which leads to higher response rates.", zh: "例如，在演讲结束时发送二维码扫码既快速又方便，这能带来更高的回复率。" },
+                { en: "Q3: How do you think technology will change business conferences in the future?", zh: "Q3：你认为未来科技会如何改变商务会议？" },
+                { en: "I expect business conferences will become more hybrid in the future.", zh: "我预计未来的商务会议将变得更加混合。" },
+                { en: "For example, people may be able to attend virtually and interact with speakers through real-time translation tools.", zh: "例如，人们可能可以虚拟参加，并通过实时翻译工具与演讲者互动。" },
+                { en: "There are likely to be developments in AI-powered networking as well, which could help participants find relevant contacts automatically.", zh: "人工智能驱动的社交网络也可能会有发展，这可以帮助参与者自动找到相关的联系人。" }
+            ]
+        },
+        {
+            title: "主題 6：博物館（官方題目）",
+            sentences: [
+                { en: "Q1: Why do you think people enjoy visiting museums?", zh: "Q1：为什么你认为人们喜欢参观博物馆？" },
+                { en: "In my opinion, people enjoy visiting museums because they want to learn about the past and gain new knowledge.", zh: "我认为，人们喜欢参观博物馆是因为他们想了解过去并获取新知识。" },
+                { en: "Others might visit because they enjoy seeing art or cultural exhibitions.", zh: "其他人可能是因为喜欢欣赏艺术或文化展览而参观。" },
+                { en: "For example, many tourists visit famous museums to understand the history of the country they are visiting.", zh: "例如，许多游客参观著名博物馆是为了了解他们正在访问的国家的历史。" },
+                { en: "Q2: In what ways can museums help students?", zh: "Q2：博物馆可以在哪些方面帮助学生？" },
+                { en: "I think museums can help students with their projects and assignments.", zh: "我认为博物馆可以帮助学生完成项目和作业。" },
+                { en: "For instance, a student doing a geography project could get information about volcanoes or natural history.", zh: "例如，做地理项目的学生可以获得关于火山或自然历史的信息。" },
+                { en: "Furthermore, seeing real objects can make learning more interesting than just reading textbooks.", zh: "此外，看到真实的物体可以让学习变得比只读课本更有趣。" },
+                { en: "Q3: How do you think museums might change in the future?", zh: "Q3：你认为未来博物馆可能会如何变化？" },
+                { en: "I expect museums will use more technology in the future.", zh: "我预计未来博物馆会使用更多技术。" },
+                { en: "There are likely to be developments in virtual reality, so visitors may be able to interact with exhibits virtually.", zh: "虚拟现实可能会有发展，所以参观者可能能够虚拟地与展品互动。" },
+                { en: "People may even be able to visit museums from home without travelling.", zh: "人们甚至可能不用出门就可以在家参观博物馆。" }
+            ]
+        },
+        {
+            title: "主題 7：產品簡報與銷售（官方題目）",
+            sentences: [
+                { en: "Q1: How can you find out which are the right people to invite to a product presentation?", zh: "Q1：你如何找出哪些是应该邀请参加产品演示的合适人选？" },
+                { en: "In my opinion, the best way is to do some research on your target audience.", zh: "我认为，最好的方法是对你的目标受众做一些研究。" },
+                { en: "This is mainly because different customers have different needs.", zh: "这主要是因为不同的客户有不同的需求。" },
+                { en: "For instance, you can use customer databases or surveys to identify who would be most interested.", zh: "例如，你可以使用客户数据库或调查来确定谁最感兴趣。" },
+                { en: "Q2: How much should you practice before presenting to customers?", zh: "Q2：在向客户演示之前你应该练习多少？" },
+                { en: "I think you should practice until you feel confident.", zh: "我认为你应该练习到感到自信为止。" },
+                { en: "This is mainly because being well-prepared helps you handle unexpected questions.", zh: "这主要是因为充分准备有助于你处理意想不到的问题。" },
+                { en: "For instance, many professionals suggest doing at least three full run-throughs before the actual presentation.", zh: "例如，许多专业人士建议在实际演示前至少进行三次完整的演练。" },
+                { en: "Q3: Why is it important to know a lot about the product you are selling?", zh: "Q3：为什么对你正在销售的产品了解很多很重要？" },
+                { en: "I believe it's essential because customers often ask detailed questions.", zh: "我相信这是必不可少的，因为客户经常问详细的问题。" },
+                { en: "This is mainly because they need to trust that you understand what you're selling.", zh: "这主要是因为他们需要相信你了解你在卖什么。" },
+                { en: "For example, if you can explain technical features clearly, customers will have more confidence in the product.", zh: "例如，如果你能清楚地解释技术特点，客户会对产品更有信心。" },
+                { en: "Q4: What advice do you have about how to get customers interested in a product?", zh: "Q4：关于如何让客户对产品感兴趣，你有什么建议？" },
+                { en: "I would suggest focusing on how the product solves their problems.", zh: "我建议专注于产品如何解决他们的问题。" },
+                { en: "This is mainly because customers care more about benefits than features.", zh: "这主要是因为客户更关心好处而不是功能。" },
+                { en: "For instance, you can show real-life examples or case studies to demonstrate value.", zh: "例如，你可以展示现实生活中的例子或案例研究来展示价值。" },
+                { en: "Q5: What qualities should a successful presenter and salesperson have?", zh: "Q5：成功的演讲者和销售人员应该具备什么素质？" },
+                { en: "In my opinion, the most important qualities are confidence and good communication skills.", zh: "我认为，最重要的素质是自信和良好的沟通技巧。" },
+                { en: "This is mainly because these help you connect with your audience.", zh: "这主要是因为这些有助于你与观众建立联系。" },
+                { en: "For instance, a confident presenter can build trust, which is key to closing a deal.", zh: "例如，一个自信的演讲者可以建立信任，这是达成交易的关键。" }
+            ]
+        },
+        // ===== Part 3 — Recommendation =====
+        {
+            title: "範文 1：Executive Public Speaking Course（高階演講課程）",
+            sentences: [
+                { en: "Hi there! I looked over the Executive Public Speaking program details, and here is my honest recommendation.", zh: "嗨！我仔细看了高階演講課程的详细信息，以下是我诚实的建议。" },
+                { en: "On the positive side, this program looks highly effective for your goal of building presentation confidence.", zh: "从正面来看，这个课程对于你建立演讲信心的目标看起来非常有效。" },
+                { en: "It has a great 4-star overall rating, and 80% of participants reported a major boost in confidence.", zh: "它有很好的四星总体评价，80%的参与者报告信心大幅提升。" },
+                { en: "Additionally, the trainer quality is rated very high at 85% positive, which is reassuring since you've never had live coaching before.", zh: "此外，培训师质量的正面评价高达85%，考虑到你从未接受过现场辅导，这点让人放心。" },
+                { en: "However, I have some serious concerns regarding your schedule.", zh: "然而，我对你的时间安排有一些严重的担忧。" },
+                { en: "You mentioned wanting to avoid interference with your family.", zh: "你提到希望避免影响家庭时间。" },
+                { en: "The program requires live sessions twice a week from 7:30 PM to 9:00 PM, which is prime family time.", zh: "这个课程要求每周两次现场课程，时间是晚上7:30到9:00，这正是家庭时间。" },
+                { en: "Looking at the data, 40% of previous participants rated the scheduling flexibility negatively, and only 30% viewed it positively.", zh: "从数据来看，40%的过往参与者对时间安排的灵活性给予负面评价，只有30%给予正面评价。" },
+                { en: "This tells me the program is quite rigid and might put a strain on your evenings.", zh: "这告诉我这个课程相当固定，可能会给你的晚上时间造成压力。" },
+                { en: "So, in conclusion, while the course content is excellent, I would recommend it only if you can secure family support for those evenings.", zh: "所以，总结来说，虽然课程内容很出色，我只建议在你能确保那些晚上获得家庭支持的情况下选择它。" },
+                { en: "Otherwise, you might want to look for a more flexible alternative.", zh: "否则，你可能想寻找一个更灵活的选择。" }
+            ]
+        },
+        {
+            title: "範文 2：Total Wellness Fitness Program（健康健身課程）",
+            sentences: [
+                { en: "Hi! I looked over the Total Wellness Fitness Program details, and here is my honest opinion.", zh: "嗨！我仔细看了健康健身课程的详细信息，以下是我诚实的看法。" },
+                { en: "On the positive side, this program has excellent trainer quality, with 80% positive feedback from participants.", zh: "从正面来看，这个课程有出色的培训师质量，参与者正面反馈高达80%。" },
+                { en: "This is reassuring since you've never followed a structured plan with a coach before.", zh: "这点让人放心，因为你从未跟随教练进行过结构化训练。" },
+                { en: "The materials are also reasonably good at 65% satisfaction, and the program outcomes are promising – 55% of participants achieved measurable fitness goals.", zh: "教材也不错，满意度为65%，而且课程成果很有希望——55%的参与者达成了可衡量的健身目标。" },
+                { en: "However, I have some serious concerns regarding the administrative support.", zh: "然而，我对行政支持有一些严重的担忧。" },
+                { en: "Only 25% of participants rated it positively, while 50% rated it negatively.", zh: "只有25%的参与者给予正面评价，而有50%给予负面评价。" },
+                { en: "This suggests the program might be poorly organised behind the scenes.", zh: "这表明课程在幕后可能组织不善。" },
+                { en: "In addition, the schedule is quite demanding with three live sessions a week, which could be challenging to balance with work and family.", zh: "此外，时间安排相当紧凑，每周三次现场课程，这可能很难与工作和家庭平衡。" },
+                { en: "In conclusion, while the coaching quality is strong, I would recommend proceeding with caution.", zh: "总结来说，虽然教练质量很强，我会建议谨慎行事。" },
+                { en: "If you can commit to the schedule, it could be a great program.", zh: "如果你能承诺时间安排，这可能是一个很好的课程。" },
+                { en: "But if your time is limited, the poor administrative support might cause unnecessary stress.", zh: "但如果你的时间有限，糟糕的行政支持可能会造成不必要的压力。" }
+            ]
+        },
+        {
+            title: "範文 3：Practise and Pass Driving School（駕訓班）",
+            sentences: [
+                { en: "Hey! I looked over the Practise and Pass Driving School information, and here is my honest recommendation.", zh: "嘿！我仔细看了Practise and Pass驾训班的资讯，以下是我诚实的建议。" },
+                { en: "On the positive side, this driving school has an excellent track record.", zh: "从正面来看，这间驾训班有出色的记录。" },
+                { en: "They have 40 years of experience and 93% of students passed their test within 40 hours of teaching – which is very impressive.", zh: "他们有40年的经验，93%的学生在40小时的教学内通过考试——这非常令人印象深刻。" },
+                { en: "The instructor quality is also high at 89% satisfaction, and the school offers both manual and automatic cars, so you have flexibility in what you learn.", zh: "教练质量也很高，满意度达89%，而且学校同时提供手排和自排车，所以你在学习上有弹性。" },
+                { en: "However, there are a few things to consider.", zh: "然而，有几点需要考虑。" },
+                { en: "You need a provisional learner's licence before you can start, so make sure you apply for that in advance.", zh: "你需要先有学习驾照才能开始上课，所以务必提前申请。" },
+                { en: "Also, while the value for money is acceptable at 62% satisfaction, there's an extra charge for home pick-up, so you'll need to factor that into your budget if you want that service.", zh: "此外，虽然性价比尚可接受，满意度为62%，但到府接送有额外收费，所以如果你需要这项服务，需要把费用纳入预算。" },
+                { en: "In conclusion, I would definitely recommend this driving school.", zh: "总结来说，我肯定会推荐这间驾训班。" },
+                { en: "Their pass rate is outstanding, and with four offices across Brighton, it should be easy for you to get to your lessons.", zh: "他们的通过率很出色，而且在Brighton有四间分校，你应该可以很容易去上课。" },
+                { en: "Just remember to apply for your provisional licence as soon as possible!", zh: "记得要尽快申请学习驾照！" }
+            ]
+        },
+        {
+            title: "範文 4：XL Water Sports（水上運動課程）",
+            sentences: [
+                { en: "Based on the information provided, I would recommend the XL Water Sports program for anyone interested in water activities.", zh: "根据所提供的信息，我会向任何对水上活动感兴趣的人推荐XL Water Sports课程。" },
+                { en: "On the positive side, the school has 25 years of experience and four coastal locations, so you have plenty of options.", zh: "从正面来看，学校有25年的经验和四个沿海地点，所以你有多种选择。" },
+                { en: "All equipment is provided, and the instructor-led courses cater to all levels – from complete beginners to advanced participants.", zh: "所有设备都有提供，教练指导的课程适合所有水平——从完全的初学者到高级参与者。" },
+                { en: "The overall rating is five stars, with 82% satisfaction for equipment quality and 75% for facilities.", zh: "总体评价是五颗星，设备质量满意度82%，设施满意度75%。" },
+                { en: "Furthermore, 75% of participants said they had improved, and 63% now participate in water sports more often.", zh: "此外，75%的参与者说他们有进步，63%现在更频繁地参加水上运动。" },
+                { en: "However, I have a concern regarding the customer service, as it only received 35% satisfaction.", zh: "然而，我对客户服务有些担忧，因为它只获得了35%的满意度。" },
+                { en: "This is significantly lower than other metrics and suggests the support team may not be very responsive or helpful.", zh: "这明显低于其他指标，表明支持团队可能不太响应或不太有帮助。" },
+                { en: "In conclusion, while the facilities and teaching quality are excellent, you should be prepared for potentially poor customer service.", zh: "总结来说，虽然设施和教学质量优秀，你应该为可能较差的客户服务做好准备。" },
+                { en: "If you can overlook that, the program seems highly rewarding – especially since 38% of participants booked another course!", zh: "如果你能忽略这一点，这个课程似乎非常值得——尤其是38%的参与者预订了另一门课程！" }
+            ]
+        },
+        {
+            title: "範文 5：Project Management Training Course（專案管理培訓課程）",
+            sentences: [
+                { en: "Hey Annie, I got your message. First of all, thanks for sharing this – it sounds like an important task you've been given.", zh: "嘿 Annie，我收到了你的消息。首先，感谢你分享这个——听起来你被赋予了一项重要任务。" },
+                { en: "After looking at the course information, I think you should seriously consider this training programme.", zh: "看了课程信息后，我认为你应该认真考虑这个培训项目。" },
+                { en: "This is mainly because it covers exactly the areas you mentioned, including time management and finance training, which are your key priorities.", zh: "这主要是因为它正好涵盖了你提到的领域，包括时间管理和财务培训，这是你的关键优先事项。" },
+                { en: "Also, the course offers flexible scheduling with part-time and full-time options.", zh: "另外，课程提供灵活的时间安排，有兼职和全职选项。" },
+                { en: "This is great since you mentioned that time is limited, so your junior managers can fit it around their existing work.", zh: "这很好，因为你提到时间有限，所以你的初级经理可以根据现有工作来安排。" },
+                { en: "However, you might want to check whether the course can be delivered in-house or if you need to send people off-site.", zh: "然而，你可能需要检查课程是否可以在内部进行，还是需要派人外出参加。" },
+                { en: "But overall, I'd say this course seems well suited to your company's needs, especially given the positive satisfaction ratings of 4.5 out of 5.", zh: "但总体来说，我会说这个课程似乎很适合你们公司的需求，尤其是考虑到4.5/5的正面满意度评分。" }
+            ]
+        },
+        {
+            title: "範文 6：Video Game Design Course（電玩設計課程）",
+            sentences: [
+                { en: "Hey James, I got your message. First of all, sorry to hear you've had enough of your job, but I think this could be a great move for you.", zh: "嘿 James，我收到了你的消息。首先，很遗憾听到你受够了你的工作，但我认为这对你来说可能是一个很好的转变。" },
+                { en: "After looking at the course information, I think you should apply for this course because it offers flexible study options.", zh: "看了课程信息后，我认为你应该申请这门课程，因为它提供灵活的学习选择。" },
+                { en: "This is mainly because you mentioned that you need to study part-time since you haven't got any savings.", zh: "这主要是因为你提到你需要兼职学习，因为你没有任何积蓄。" },
+                { en: "Like you say, you're going to need to keep the money coming in even while you study.", zh: "就像你说的，即使在学习期间，你也需要继续有收入。" },
+                { en: "Also, it's great that they offer several payment options, and it looks like you don't need to pay the course fees in advance, which is another plus point for you.", zh: "另外，他们提供多种付款方式很好，而且看起来你不需要提前支付课程费用，这对你来说又是一个加分项。" },
+                { en: "In addition, students will need experience with all types of games, and you've got plenty of that.", zh: "此外，学生需要了解各种类型的游戏，而你在这方面有很多经验。" },
+                { en: "However, you might want to check the feedback about 'value for money' as it was a bit low.", zh: "然而，你可能需要检查关于'性价比'的反馈，因为它有点低。" },
+                { en: "But overall, I'd say the course seems pretty well suited to what you're looking for.", zh: "但总体来说，我会说这门课程似乎很适合你正在寻找的东西。" }
+            ]
+        },
+        {
+            title: "範文 7：職涯轉換建議（向 Sheila 回覆）",
+            sentences: [
+                { en: "Hey Sheila, sorry to hear that you're feeling stressed at work.", zh: "嘿 Sheila，很遗憾听到你在工作中感到压力。" },
+                { en: "If I were in your shoes, I would consider applying for the new role of Corporate Wellness & Partnerships Manager.", zh: "如果我是你，我会考虑申请企业健康与伙伴关系经理这个新职位。" },
+                { en: "First of all, you should think about your current challenges – the stress, the isolated office, and the lack of support.", zh: "首先，你应该思考你当前的挑战——压力、孤立的办公室和缺乏支持。" },
+                { en: "This new position would actually allow you to solve those problems because you would be responsible for building support structures and developing employee well-being programmes.", zh: "这个新职位实际上可以让你解决这些问题，因为你要负责建立支持结构和开发员工福利项目。" },
+                { en: "Why don't you highlight your key skills?", zh: "你为什么不突出你的关键技能呢？" },
+                { en: "You have empathy, a sales background, and good communication skills, which are exactly what this role requires.", zh: "你有同理心、销售背景和良好的沟通技巧，这正是这个角色所需要的。" },
+                { en: "Have you thought about how this could change your work-life balance?", zh: "你有没有想过这会如何改变你的工作与生活平衡？" },
+                { en: "The role focuses on communication and relationship-building, so you would have more meaningful interactions with people.", zh: "这个角色侧重于沟通和建立关系，所以你会与人进行更有意义的互动。" },
+                { en: "I think your only option is to go for it.", zh: "我认为你唯一的选择就是去争取它。" },
+                { en: "You'd better talk to your boss honestly and show them how your skills match this new opportunity.", zh: "你最好诚实地和你的老板谈谈，向他们展示你的技能如何匹配这个新机会。" },
+                { en: "In short, this role could turn your stress into success!", zh: "简而言之，这个角色可以把你的压力变成成功！" }
+            ]
+        },
+        // ===== Part 4 — Argument Presentation =====
+        {
+            title: "範文 1：傳統科目 vs 生活技能（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, some people argue that schools should focus on life skills because not every student is academically gifted.", zh: "一方面，有些人认为学校应该专注于生活技能，因为不是每个学生在学业上都有天赋。" },
+                { en: "They claim that traditional subjects cannot teach flexibility and emotional control, which are essential for adult life.", zh: "他们主张传统科目无法教导灵活性和情绪控制，而这些对于成年生活是必不可少的。" },
+                { en: "For instance, learning how to manage finances or handle stress is something that everyone needs, regardless of their career path.", zh: "例如，学习如何管理财务或应对压力是每个人都需要的，无论他们的职业道路是什么。" },
+                { en: "On the other hand, I personally believe that traditional subjects are still essential.", zh: "另一方面，我个人认为传统科目仍然很重要。" },
+                { en: "This is mainly because mathematics and science provide the foundation for many future careers, and language subjects teach critical thinking and communication skills.", zh: "这主要是因为数学和科学为许多未来的职业提供了基础，而语言科目则教导批判性思维和沟通技巧。" },
+                { en: "In addition, traditional subjects also develop valuable life skills – problem-solving, discipline, and analytical thinking.", zh: "此外，传统科目也能培养有价值的生活技能——解决问题、纪律和分析思维。" },
+                { en: "In conclusion, while I understand the appeal of focusing on practical skills, I firmly believe that a balanced approach is best.", zh: "总结来说，虽然我理解专注于实用技能的吸引力，但我坚信平衡的方法是最好的。" },
+                { en: "Schools should teach both traditional subjects and life skills, rather than replacing one with the other.", zh: "学校应该同时教授传统科目和生活技能，而不是用一个取代另一个。" },
+                { en: "So, that is why I think we should keep traditional subjects while integrating more practical training.", zh: "所以，这就是为什么我认为我们应该保留传统科目，同时整合更多实用训练。" }
+            ]
+        },
+        {
+            title: "範文 2：四天工作制（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, advocates argue that a four-day workweek drastically improves employee well-being and reduces burnout.", zh: "一方面，支持者主张四天工作制能大幅提升员工福祉并减少职业倦怠。" },
+                { en: "They claim that when workers have three full days to rest, they return highly motivated and focused.", zh: "他们声称，当员工有完整的三天休息时，他们会带着高度动力和专注力回到工作岗位。" },
+                { en: "For instance, some companies that have tried this model reported increased productivity and lower staff turnover.", zh: "例如，一些尝试过这种模式的公司报告了生产力提升和员工流动率降低。" },
+                { en: "In addition, it serves as an excellent recruitment tool for companies looking to attract top talent.", zh: "此外，这对于想吸引顶尖人才的公司来说也是一个很好的招聘工具。" },
+                { en: "On the other hand, critics point out that compressing 40 hours of work into four days can actually increase stress during those working days.", zh: "另一方面，批评者指出，将40小时的工作压缩到四天，实际上可能会增加那些工作日中的压力。" },
+                { en: "For industries like customer service, manufacturing, or healthcare, remaining closed or understaffed for an extra day a week is impractical.", zh: "对于客户服务、制造业或医疗保健等行业来说，每周多关闭一天或人手不足一天是不切实际的。" },
+                { en: "Furthermore, this could lead to lost revenue or decreased client satisfaction for businesses that operate globally.", zh: "此外，这可能会导致在全球运营的企业收入损失或客户满意度下降。" },
+                { en: "In conclusion, while I understand the benefits of a shorter workweek, I believe it should be implemented on a case-by-case basis.", zh: "总结来说，虽然我理解缩短工作周的好处，但我认为应该根据具体情况来实施。" },
+                { en: "Some industries are better suited to this model than others.", zh: "有些行业比其他行业更适合这种模式。" },
+                { en: "So, that is why I think companies should carefully assess their specific circumstances before making any changes.", zh: "所以，这就是为什么我认为公司在做出任何改变之前，应该仔细评估他们的具体情况。" }
+            ]
+        },
+        {
+            title: "範文 3：禁止塑膠袋（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, supporters of this policy argue that plastic bags cause serious harm to the environment.", zh: "一方面，这项政策的支持者认为塑料袋对环境造成严重危害。" },
+                { en: "They claim that these bags take hundreds of years to break down and often end up hurting animals and sea life.", zh: "他们声称这些袋子需要数百年才能分解，常常最终伤害动物和海洋生物。" },
+                { en: "For instance, many marine creatures mistake plastic for food, which can be fatal.", zh: "例如，许多海洋生物把塑料误认为食物，这可能是致命的。" },
+                { en: "In addition, reusable bags would significantly reduce waste and pollution over time.", zh: "此外，随着时间的推移，可重复使用的袋子将显著减少浪费和污染。" },
+                { en: "On the other hand, opponents argue that banning plastic bags is inconvenient for shoppers who forget to bring their own bags.", zh: "另一方面，反对者认为禁止塑料袋对忘记自带袋子的购物者来说不方便。" },
+                { en: "They claim that it would also be difficult for small stores that rely on cheap packaging materials.", zh: "他们声称这对依赖廉价包装材料的小商店来说也很困难。" },
+                { en: "Furthermore, alternatives like paper bags also have their own environmental costs, such as deforestation and higher energy consumption during production.", zh: "此外，像纸袋这样的替代品也有自己的环境成本，比如森林砍伐和生产过程中更高的能源消耗。" },
+                { en: "In conclusion, while I understand the concerns about inconvenience, I firmly believe that the environmental benefits outweigh the drawbacks.", zh: "总结来说，虽然我理解对不便之处的担忧，但我坚信环境效益大于弊端。" },
+                { en: "Governments should implement the ban gradually and encourage the use of reusable bags through awareness campaigns.", zh: "政府应该逐步实施禁令，并通过宣传活动鼓励使用可重复使用的袋子。" },
+                { en: "So, that is why I support this policy.", zh: "所以，这就是为什么我支持这项政策。" }
+            ]
+        },
+        {
+            title: "範文 4：遠端工作 vs 辦公室工作（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, some people argue that working from home benefits businesses more than individuals.", zh: "一方面，有些人认为远程工作对企业比个人更有利。" },
+                { en: "They claim that companies save money on office space and can encourage employees to take more responsibility.", zh: "他们声称公司节省了办公空间费用，并能鼓励员工承担更多责任。" },
+                { en: "For instance, a business with fewer office costs can invest more in other areas.", zh: "例如，办公成本更低的企业可以在其他领域投资更多。" },
+                { en: "On the other hand, I personally believe that individuals actually benefit more.", zh: "另一方面，我个人认为个人实际上受益更多。" },
+                { en: "This is mainly because employees save time and money by not commuting, and they gain flexibility to manage personal appointments.", zh: "这主要是因为员工通过不通勤节省了时间和金钱，而且他们获得了管理个人事务的灵活性。" },
+                { en: "In addition, they can achieve better work-life balance, which leads to higher job satisfaction.", zh: "此外，他们可以实现更好的工作与生活平衡，从而带来更高的工作满意度。" },
+                { en: "In conclusion, while I understand the business perspective about cost savings, I firmly believe that the personal benefits are more significant.", zh: "总结来说，虽然我理解企业关于成本节约的观点，但我坚信个人利益更为显著。" },
+                { en: "So, that is why I think individuals gain more from remote work, though both sides do see some advantages.", zh: "所以，这就是为什么我认为个人从远程工作中获益更多，尽管双方确实都看到了一些优势。" }
+            ]
+        },
+        {
+            title: "範文 5：標準化考試（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, some people argue that standardized exams reward short-term memory tricks rather than deep understanding.", zh: "一方面，有些人认为标准化考试奖励的是短期记忆技巧，而不是深度理解。" },
+                { en: "They claim that students spend weeks trying to cram for an exam, and once they survive the test, the information is immediately forgotten.", zh: "他们声称学生花费数周时间为考试死记硬背，一旦通过考试，这些信息就会立即被遗忘。" },
+                { en: "In addition, the high pressure of these exams can cause anxiety and burnout, which is detrimental to students' mental health.", zh: "此外，这些考试的高压可能会导致焦虑和倦怠，这对学生的心理健康是有害的。" },
+                { en: "On the other hand, I personally disagree with this idea.", zh: "另一方面，我个人不同意这个观点。" },
+                { en: "This is mainly because the act of reviewing and preparing for a major test actually consolidates knowledge into long-term memory.", zh: "这主要是因为复习和准备重要考试的行为实际上将知识巩固到长期记忆中。" },
+                { en: "In addition, standardized tests provide a fair, unbiased benchmark that protects students from subjective grading.", zh: "此外，标准化考试提供了一个公平、无偏见的基准，保护学生免受主观评分的影响。" },
+                { en: "For instance, without standardized testing, it would be impossible to know if a student's high grades are accurate or just the result of an easy grader.", zh: "例如，如果没有标准化考试，就不可能知道一个学生的高分是否准确，还是只是一个给分宽松的老师的结果。" },
+                { en: "In conclusion, while I understand the concerns about stress and surface learning, I firmly believe that standardized exams serve an important purpose in education.", zh: "总结来说，虽然我理解关于压力和表面学习的担忧，但我坚信标准化考试在教育中扮演着重要角色。" },
+                { en: "So, that is why I think they should be kept but improved rather than abandoned.", zh: "所以，这就是为什么我认为它们应该被保留，但要改进，而不是被废弃。" }
+            ]
+        },
+        {
+            title: "範文 6：送禮 vs 給錢（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, some people argue that giving money is the better option.", zh: "一方面，有些人认为送钱是更好的选择。" },
+                { en: "They claim that it allows the recipient to buy exactly what they genuinely want.", zh: "他们声称这能让接收者买到他们真正想要的东西。" },
+                { en: "For instance, it's easy to get gift-giving wrong – you might choose the wrong size, colour, or something the person already owns.", zh: "例如，送礼很容易出错——你可能会选错尺寸、颜色，或者送对方已经有的东西。" },
+                { en: "With cash, there's no risk of the gift being put in a dark cupboard or thrown away.", zh: "有了现金，礼物就没有被放进黑暗的柜子里或扔掉的风险。" },
+                { en: "On the other hand, others believe that buying a present is more meaningful.", zh: "另一方面，其他人认为买礼物更有意义。" },
+                { en: "They argue that a gift shows personal thought and effort, which is what makes it special.", zh: "他们认为礼物体现了个人心意和努力，这正是它特别之处。" },
+                { en: "In addition, the element of surprise when unwrapping a present creates a unique emotional experience that money cannot replicate.", zh: "此外，拆开礼物时的惊喜元素创造了金钱无法复制的独特情感体验。" },
+                { en: "In conclusion, I believe the answer depends on the situation.", zh: "总结来说，我认为答案取决于具体情况。" },
+                { en: "For close friends and family, a thoughtful gift is usually more appreciated.", zh: "对于亲密的朋友和家人，一份用心的礼物通常更受欢迎。" },
+                { en: "However, for more distant relationships or when you're unsure what to buy, cash can be a perfectly acceptable choice.", zh: "然而，对于更疏远的关系或当你不确定买什么时，现金可以是一个完全可以接受的选择。" },
+                { en: "So, that is why I think both approaches have their place.", zh: "所以，这就是为什么我认为两种方式都有其适用之处。" }
+            ]
+        },
+        {
+            title: "範文 7：去電影院 vs 串流平台（官方題目）",
+            sentences: [
+                { en: "This is a very interesting topic.", zh: "这是一个非常有趣的话题。" },
+                { en: "On one hand, some people argue that going to the cinema is a superior experience.", zh: "一方面，有些人认为去电影院是更优的体验。" },
+                { en: "They claim that the big screen and advanced sound systems create an immersive experience that cannot be replicated at home.", zh: "他们声称大屏幕和先进的音响系统创造了无法在家中复制的沉浸式体验。" },
+                { en: "In addition, watching a film at the cinema can be part of a fun social occasion – enjoying the outing with friends or family without the distractions of home.", zh: "此外，在电影院看电影可以是一个有趣的社交场合——享受与朋友或家人的外出，没有家庭的干扰。" },
+                { en: "On the other hand, others believe that streaming services are the better choice.", zh: "另一方面，其他人认为流媒体服务是更好的选择。" },
+                { en: "They point out that the quality of home televisions today is better than ever, making the visual experience quite impressive.", zh: "他们指出，如今家用电视的质量比以往任何时候都好，使得视觉体验相当令人印象深刻。" },
+                { en: "In addition, streaming is much less expensive than frequent cinema trips and offers a significantly higher amount of choice.", zh: "此外，流媒体比频繁去电影院便宜得多，而且提供了更多的选择。" },
+                { en: "In conclusion, while I understand the appeal of the cinema experience, I personally prefer streaming services for their convenience and variety.", zh: "总结来说，虽然我理解电影体验的吸引力，但我个人更喜欢流媒体服务的便利性和多样性。" },
+                { en: "So, that is why I think people should choose based on their preferences and budget, rather than believing one option is always superior.", zh: "所以，这就是为什么我认为人们应该根据自己的喜好和预算来选择，而不是相信一种选择总是优于另一种。" }
+            ]
+        },
+        // ===== 附錄一：Small Talk 萬用問答 =====
+        {
+            title: "附錄：Small Talk 萬用問答",
+            sentences: [
+                { en: "Q1: What do you usually do in your line of work?", zh: "Q1：你在工作中通常做什么？" },
+                { en: "As an executive, I usually manage media reports.", zh: "作为一名主管，我通常负责管理媒体报告。" },
+                { en: "This is because our department handles external communications.", zh: "这是因为我们部门处理对外沟通。" },
+                { en: "For instance, this week I am drafting a new press release for a product launch.", zh: "例如，这周我正在为一个产品发布会草拟新的新闻稿。" },
+                { en: "Q2: How do you prefer to stay in touch with colleagues?", zh: "Q2：你更喜欢如何与同事保持联系？" },
+                { en: "I prefer instant messaging apps rather than emails.", zh: "我更喜欢即时通讯应用而不是电子邮件。" },
+                { en: "This is because it allows for faster coordination.", zh: "这是因为它可以更快地协调。" },
+                { en: "For example, my team uses WeChat group chats for project updates.", zh: "例如，我的团队使用微信群组聊天进行项目更新。" },
+                { en: "Q3: Can you tell me about some rules at your workplace?", zh: "Q3：你能告诉我一些你工作场所的规则吗？" },
+                { en: "Our company is quite flexible, so we don't have to wear formal suits on Fridays.", zh: "我们公司相当灵活，所以我们周五不必穿正式西装。" },
+                { en: "However, we must maintain professional standards when meeting clients.", zh: "然而，我们在会见客户时必须保持专业标准。" },
+                { en: "For instance, you can work from home, but you have to submit project reports on time.", zh: "例如，你可以在家工作，但你必须按时提交项目报告。" },
+                { en: "Q4: What do you like to do after work to relax?", zh: "Q4：下班后你喜欢做什么来放松？" },
+                { en: "I usually do functional fitness training after a busy day at the office.", zh: "在办公室忙碌了一天之后，我通常做功能性健身训练。" },
+                { en: "This helps me reduce stress and boost my vitality.", zh: "这可以帮助我减轻压力并提升活力。" },
+                { en: "Typically, I spend two hours at the gym every Tuesday evening to completely unwind.", zh: "通常，我每周二晚上会在健身房待两个小时来彻底放松。" }
             ]
         }
     ];
@@ -630,7 +832,7 @@
         passages.forEach((p, idx) => {
             const opt = document.createElement('option');
             opt.value = idx;
-            opt.textContent = p.title || '范文';
+            opt.textContent = p.title || `范文 ${idx+1}`;
             passageSelect.appendChild(opt);
         });
         passageSelect.value = currentPassageIndex;
